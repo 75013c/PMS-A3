@@ -1,0 +1,333 @@
+<!-- Main page header for the inventory list page. -->
+<ion-header class="app-top-header">
+  <ion-toolbar class="app-top-toolbar">
+    <!-- Page title displayed in the top toolbar. -->
+    <ion-title>Inventory Items</ion-title>
+
+    <!-- Help button placed on the right side of the top toolbar. -->
+    <ion-buttons slot="end">
+      <ion-button class="help-widget-button" fill="clear"
+        style="font-size: 38px; width: 46px; height: 46px; --padding-start: 0; --padding-end: 0; --padding-top: 0; --padding-bottom: 0;"
+        aria-label="Open page help" (click)="showHelp()">
+        <ion-icon name="help-circle-outline" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<!-- Main content area for the inventory page. -->
+<ion-content [fullscreen]="true" class="glass-page">
+
+  <!-- Decorative aurora background layer. -->
+  <div class="aurora-background" aria-hidden="true"></div>
+
+  <!-- Pull-to-refresh control for reloading inventory records. -->
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content pullingText="Pull to refresh" refreshingText="Refreshing inventory...">
+    </ion-refresher-content>
+  </ion-refresher>
+
+  <!-- Main page layout container. -->
+  <div class="page-container">
+
+    <!-- Sticky Top Search Bar -->
+    <div class="sticky-search-wrapper">
+      <ion-card class="search-card">
+        <ion-card-content>
+          <!-- Search input and search button are grouped in one row. -->
+          <div class="search-row">
+
+            <!-- Text input used to search an item by name. -->
+            <div class="custom-search-box">
+              <input class="custom-search-input" type="text" [(ngModel)]="searchName" placeholder="Search Item by Name"
+                (keyup.enter)="searchItem()" />
+            </div>
+
+            <!-- Search button triggers the item search function. -->
+            <ion-button class="search-icon-button" fill="solid" color="primary" (click)="searchItem()"
+              [disabled]="loading">
+              <ion-icon name="search-outline"></ion-icon>
+            </ion-button>
+
+          </div>
+
+          <!-- Clear button appears only when the page is in search mode. -->
+          <ion-button class="clear-search-button" *ngIf="isSearchMode" expand="block" fill="clear"
+            (click)="clearSearch()">
+            Clear Search Results
+          </ion-button>
+        </ion-card-content>
+      </ion-card>
+    </div>
+
+    <!-- Inventory Stats / Search Results Area -->
+    <section class="section-block" *ngIf="!isSearchMode; else searchResultsInStatsArea">
+      <div class="section-header">
+        <h2>Stats Overview</h2>
+      </div>
+
+      <!-- Grid showing summary statistics for the current inventory data. -->
+      <div class="stats-grid">
+        <!-- Total number of inventory items. -->
+        <ion-card class="stat-card">
+          <ion-card-content>
+            <div class="stat-left">
+              <div class="stat-icon total">
+                <ion-icon name="cube-outline"></ion-icon>
+              </div>
+              <div class="stat-label">Total Items</div>
+            </div>
+
+            <div class="stat-value">{{ totalItems | number:'1.0-0' }}</div>
+          </ion-card-content>
+        </ion-card>
+
+        <!-- Number of items currently marked as in stock. -->
+        <ion-card class="stat-card">
+          <ion-card-content>
+            <div class="stat-left">
+              <div class="stat-icon success">
+                <ion-icon name="checkmark-circle-outline"></ion-icon>
+              </div>
+              <div class="stat-label">In Stock</div>
+            </div>
+
+            <div class="stat-value">{{ inStockCount | number:'1.0-0' }}</div>
+          </ion-card-content>
+        </ion-card>
+
+        <!-- Number of items currently marked as low stock. -->
+        <ion-card class="stat-card">
+          <ion-card-content>
+            <div class="stat-left">
+              <div class="stat-icon warning">
+                <ion-icon name="alert-circle-outline"></ion-icon>
+              </div>
+              <div class="stat-label">Low Stock</div>
+            </div>
+
+            <div class="stat-value">{{ lowStockCount | number:'1.0-0' }}</div>
+          </ion-card-content>
+        </ion-card>
+
+        <!-- Number of items currently marked as out of stock. -->
+        <ion-card class="stat-card">
+          <ion-card-content>
+            <div class="stat-left">
+              <div class="stat-icon danger">
+                <ion-icon name="close-circle-outline"></ion-icon>
+              </div>
+              <div class="stat-label">Out of Stock</div>
+            </div>
+
+            <div class="stat-value">{{ outOfStockCount | number:'1.0-0' }}</div>
+          </ion-card-content>
+        </ion-card>
+
+        <!-- Total quantity across all inventory items. -->
+        <ion-card class="stat-card">
+          <ion-card-content>
+            <div class="stat-left">
+              <div class="stat-icon quantity">
+                <ion-icon name="layers-outline"></ion-icon>
+              </div>
+              <div class="stat-label">Total Quantity</div>
+            </div>
+
+            <div class="stat-value">{{ totalQuantity | number:'1.0-0' }}</div>
+          </ion-card-content>
+        </ion-card>
+
+        <!-- Number of items marked as featured. -->
+        <ion-card class="stat-card">
+          <ion-card-content>
+            <div class="stat-left">
+              <div class="stat-icon featured">
+                <ion-icon name="star-outline"></ion-icon>
+              </div>
+              <div class="stat-label">Featured Items</div>
+            </div>
+
+            <div class="stat-value">{{ featuredCount | number:'1.0-0' }}</div>
+          </ion-card-content>
+        </ion-card>
+      </div>
+
+      <!-- Estimated total inventory value based on price and quantity. -->
+      <ion-card class="value-card">
+        <ion-card-content>
+          <div class="value-left">
+            <div class="value-icon">
+              <ion-icon name="cash-outline"></ion-icon>
+            </div>
+            <div class="value-label">Estimated Inventory Value</div>
+          </div>
+
+          <div class="value-number">
+            $ {{ inventoryValue | number:'1.0-0' }}
+          </div>
+        </ion-card-content>
+      </ion-card>
+    </section>
+
+    <!-- Search results are displayed in the stats area when search mode is active. -->
+    <ng-template #searchResultsInStatsArea>
+      <section class="section-block">
+        <ng-container *ngTemplateOutlet="itemCardsContent"></ng-container>
+      </section>
+    </ng-template>
+
+    <!-- Item Cards -->
+    <section class="section-block" *ngIf="!isSearchMode">
+      <ng-container *ngTemplateOutlet="itemCardsContent"></ng-container>
+    </section>
+
+  </div>
+
+  <!-- Loading overlay shown while inventory data is being loaded. -->
+  <ion-loading [isOpen]="loading" message="Loading inventory..." cssClass="inventory-glass-loading">
+  </ion-loading>
+</ion-content>
+
+<!-- Reusable template for displaying inventory item cards. -->
+<ng-template #itemCardsContent>
+  <!-- Section title and item count summary. -->
+  <div class="section-header">
+    <h2>{{ searchResultTitle }}</h2>
+    <p>{{ itemListSummary }}</p>
+  </div>
+
+  <!-- Item list is displayed when records are available and loading is finished. -->
+  <div *ngIf="!loading && displayedItems.length > 0">
+    <!-- Each inventory item is displayed as a clickable card. -->
+    <ion-card class="item-card" *ngFor="let item of displayedItems; let i = index"
+      [class.item-card-detail-source]="isItemDetailVisible && selectedItemIndex === i"
+      [class.item-card-detail-source-hidden]="isItemDetailSourceHidden && selectedItemIndex === i"
+      [class.item-card-detail-out]="isItemDetailVisible && selectedItemIndex !== null && selectedItemIndex !== i"
+      (click)="openItemDetail(item, i, $event)">
+
+      <!-- Card header changes style according to the item's stock status. -->
+      <ion-card-header class="item-header"
+        [class.header-in-stock]="(item.stockStatus || '').toLowerCase() === 'in stock'"
+        [class.header-low-stock]="(item.stockStatus || '').toLowerCase() === 'low stock'"
+        [class.header-out-of-stock]="(item.stockStatus || '').toLowerCase() === 'out of stock'">
+
+        <!-- Main item title, category, action hint, and status area. -->
+        <div class="item-title-row">
+          <div class="item-title-group">
+            <ion-card-title>{{ getItemDisplayName(item) }}</ion-card-title>
+            <ion-card-subtitle>
+              {{ item.category || 'Miscellaneous' }}
+            </ion-card-subtitle>
+          </div>
+
+          <!-- Visual hint showing that the card can open item details. -->
+          <div class="item-click-hint" aria-hidden="true">
+            <span>View Details</span>
+            <ion-icon name="chevron-forward-outline"></ion-icon>
+          </div>
+
+          <!-- Stock status and featured label area. -->
+          <div class="item-status-column">
+            <div class="status-text">
+              {{ item.stockStatus || 'Unknown' }}
+            </div>
+
+            <div class="featured-text" *ngIf="item.featuredItem == 1">
+              Featured
+            </div>
+          </div>
+        </div>
+      </ion-card-header>
+
+      <!-- Card body contains the key item properties. -->
+      <ion-card-content>
+        <div class="item-info-grid">
+          <!-- Item ID display. -->
+          <div class="info-box">
+            <span class="info-label">ID</span>
+            <strong>{{ item.id || 'N/A' }}</strong>
+          </div>
+
+          <!-- Supplier display. -->
+          <div class="info-box">
+            <span class="info-label">Supplier</span>
+            <strong>{{ item.supplierName || 'N/A' }}</strong>
+          </div>
+
+          <!-- Price display. -->
+          <div class="info-box">
+            <span class="info-label">Price</span>
+            <strong>$ {{ item.price | number:'1.0-0' }}</strong>
+          </div>
+
+          <!-- Quantity display. -->
+          <div class="info-box">
+            <span class="info-label">Quantity</span>
+            <strong>{{ item.quantity | number:'1.0-0' }}</strong>
+          </div>
+        </div>
+
+        <!-- Optional note field display. -->
+        <div class="note-box">
+          <div class="note-label">Note</div>
+          <div class="note-text">
+            {{ item.specialNote && item.specialNote.trim() ? item.specialNote : 'None' }}
+          </div>
+        </div>
+      </ion-card-content>
+    </ion-card>
+  </div>
+
+  <!-- Empty state shown when there are no inventory records to display. -->
+  <ion-card class="empty-card" *ngIf="!loading && displayedItems.length === 0">
+    <ion-card-content>
+      <ion-icon name="cube-outline"></ion-icon>
+      <h2>No items found</h2>
+      <p>Try another search name or refresh the inventory list.</p>
+    </ion-card-content>
+  </ion-card>
+</ng-template>
+
+<!-- Expanded Item Detail -->
+<div class="item-detail-overlay" *ngIf="isItemDetailVisible" [class.open]="isItemDetailOverlayOpen"
+  [class.closing]="isItemDetailClosing" (click)="closeItemDetail()">
+
+  <!-- Animated cover layer used for the detail expansion effect. -->
+  <div class="item-detail-cover" [class.open]="isItemDetailCoverOpen" [class.closing]="isItemDetailClosing"
+    [ngStyle]="itemDetailCoverStyle">
+  </div>
+
+  <!-- Expanded detail panel for the selected inventory item. -->
+  <section class="item-detail-panel" [class.open]="isItemDetailContentOpen" [class.closing]="isItemDetailClosing"
+    [ngStyle]="itemDetailPanelStyle" (click)="$event.stopPropagation()">
+
+    <!-- Close button for the expanded item detail panel. -->
+    <ion-button class="detail-close-button" fill="clear" aria-label="Close item detail" (click)="closeItemDetail()">
+      <ion-icon name="close-outline"></ion-icon>
+    </ion-button>
+
+    <!-- Detail content container. -->
+    <div class="item-detail-content">
+      <div class="item-detail-topbar">
+        <div class="item-detail-heading">
+          <p class="item-detail-eyebrow">Item Details</p>
+        </div>
+      </div>
+
+      <!-- Full item details are rendered from the selectedItemDetailRows array. -->
+      <div class="detail-form">
+        <div class="detail-field" *ngFor="let row of selectedItemDetailRows">
+          <label class="detail-field-label">
+            {{ row.label }}
+          </label>
+
+          <!-- Multiline rows use an additional class for note-style content. -->
+          <div class="detail-value-box" [class.detail-value-box-note]="row.multiline">
+            {{ row.value }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>

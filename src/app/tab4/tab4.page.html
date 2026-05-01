@@ -1,0 +1,245 @@
+<!-- Top header for the Privacy and Security page. -->
+<ion-header class="app-top-header">
+  <ion-toolbar class="app-top-toolbar">
+    <ion-title>Privacy and Security</ion-title>
+
+    <!-- Help button opens the page explanation popup. -->
+    <ion-buttons slot="end">
+      <ion-button class="help-widget-button" fill="clear"
+        style="font-size: 38px; width: 46px; height: 46px; --padding-start: 0; --padding-end: 0; --padding-top: 0; --padding-bottom: 0;"
+        aria-label="Open page help" (click)="showHelp()">
+        <ion-icon name="help-circle-outline" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<!-- Main content area for privacy and security requirement information. -->
+<ion-content [fullscreen]="true" class="glass-page">
+  <div class="aurora-background" aria-hidden="true"></div>
+
+  <div class="page-container">
+
+    <!-- Hero card introducing the privacy and security purpose of the app. -->
+    <ion-card class="hero-card">
+      <ion-card-header>
+        <div class="hero-title-stack">
+          <ion-card-title>Privacy & Security Requirements</ion-card-title>
+          <div class="hero-fixed-subtitle">Mobile Inventory Management System</div>
+        </div>
+      </ion-card-header>
+
+      <ion-card-content>
+        <p>
+          This page explains the main privacy and security requirements considered in this inventory management
+          system.
+        </p>
+
+        <p>
+          It allows users to view, add, edit and delete inventory records, so it must handle data carefully and
+          reduce
+          the risk of accidental or unauthorised changes.
+        </p>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Requirement card explaining what data the app should collect. -->
+    <ion-card class="requirement-card">
+      <ion-card-header>
+        <div class="card-title-row">
+          <div class="icon-box">
+            <ion-icon name="document-text-outline"></ion-icon>
+          </div>
+
+          <div>
+            <ion-card-title>1. Data Collection</ion-card-title>
+            <ion-card-subtitle>Only collect inventory-related information</ion-card-subtitle>
+          </div>
+        </div>
+      </ion-card-header>
+
+      <ion-card-content>
+        <p>
+          The app only collects the information required for inventory management, such as item name, item ID,
+          category, featured status, supplier, price, quantity, stock status and optional notes.
+        </p>
+
+        <p>
+          It does not ask users to enter unnecessary personal information or store sensitive personal data.
+        </p>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Requirement card explaining secure data transfer. -->
+    <ion-card class="requirement-card">
+      <ion-card-header>
+        <div class="card-title-row">
+          <div class="icon-box">
+            <ion-icon name="lock-closed-outline"></ion-icon>
+          </div>
+
+          <div>
+            <ion-card-title>2. Secure Communication</ion-card-title>
+            <ion-card-subtitle>Protect data during network transfer</ion-card-subtitle>
+          </div>
+        </div>
+      </ion-card-header>
+
+      <ion-card-content>
+        <p>
+          The system communicates with a remote REST API. All requests should be sent through HTTPS so that data is
+          protected while travelling between the mobile device and the server.
+        </p>
+
+        <p>
+          It applies to all main operations, including loading inventory items, adding new items, editing existing
+          items
+          and deleting records.
+        </p>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Requirement card explaining validation before data submission. -->
+    <ion-card class="requirement-card">
+      <ion-card-header>
+        <div class="card-title-row">
+          <div class="icon-box">
+            <ion-icon name="checkbox-outline"></ion-icon>
+          </div>
+
+          <div>
+            <ion-card-title>3. Input Validation</ion-card-title>
+            <ion-card-subtitle>Reduce invalid or unsafe data</ion-card-subtitle>
+          </div>
+        </div>
+      </ion-card-header>
+
+      <ion-card-content>
+        <p>
+          The app validates user input before submitting data to the server. Required fields must not be empty, while
+          optional fields such as notes can be left blank.
+        </p>
+
+        <p>
+          Numeric fields such as price and quantity should only accept valid integer values. Enum fields, including
+          category, featured status and stock status, should use controlled selections instead of unrestricted text
+          input.
+        </p>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Requirement card explaining how the app reduces accidental data changes. -->
+    <ion-card class="requirement-card">
+      <ion-card-header>
+        <div class="card-title-row">
+          <div class="icon-box">
+            <ion-icon name="shield-checkmark-outline"></ion-icon>
+          </div>
+
+          <div>
+            <ion-card-title>4. Data Integrity</ion-card-title>
+            <ion-card-subtitle>Prevent accidental updates and deletions</ion-card-subtitle>
+          </div>
+        </div>
+      </ion-card-header>
+
+      <ion-card-content>
+        <p>
+          The search function uses exact item name matching so that users do not accidentally edit or delete the wrong
+          record. This is especially important when item names are similar.
+        </p>
+
+        <p>
+          Delete operations require an additional confirmation message before the request is sent. This helps prevent
+          accidental data loss.
+        </p>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Requirement card explaining safe user behaviour on mobile devices. -->
+    <ion-card class="requirement-card">
+      <ion-card-header>
+        <div class="card-title-row">
+          <div class="icon-box">
+            <ion-icon name="person-circle-outline"></ion-icon>
+          </div>
+
+          <div>
+            <ion-card-title>5. User Responsibility</ion-card-title>
+            <ion-card-subtitle>Safe use on mobile devices</ion-card-subtitle>
+          </div>
+        </div>
+      </ion-card-header>
+
+      <ion-card-content>
+        <p>
+          Users should protect their mobile devices with a passcode, fingerprint or face unlock. They should avoid using
+          the application on unsafe public networks when managing important inventory data.
+        </p>
+
+        <p>
+          Users should also check the item details carefully before editing or deleting a record.
+        </p>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Requirement card explaining backend and database protection. -->
+    <ion-card class="requirement-card">
+      <ion-card-header>
+        <div class="card-title-row">
+          <div class="icon-box">
+            <ion-icon name="server-outline"></ion-icon>
+          </div>
+
+          <div>
+            <ion-card-title>6. Server and Database Security</ion-card-title>
+            <ion-card-subtitle>Protect backend resources</ion-card-subtitle>
+          </div>
+        </div>
+      </ion-card-header>
+
+      <ion-card-content>
+        <p>
+          The server and database could restrict direct access to inventory data. In a production system,
+          authentication
+          and authorisation should be used so that only approved users can create, update or delete records.
+        </p>
+
+        <p>
+          Error messages do not expose technical server details to users. The system could show clear
+          messages when a request fails.
+        </p>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Final card summarising the privacy and security design goal. -->
+    <ion-card class="requirement-card final-card">
+      <ion-card-header>
+        <div class="card-title-row">
+          <div class="icon-box">
+            <ion-icon name="checkmark-done-outline"></ion-icon>
+          </div>
+
+          <div>
+            <ion-card-title>Summary</ion-card-title>
+            <ion-card-subtitle>Privacy and security design goal</ion-card-subtitle>
+          </div>
+        </div>
+      </ion-card-header>
+
+      <ion-card-content>
+        <p>
+          The goal of system requirements is to keep inventory data accurate, reduce accidental changes, protect data
+          during
+          transfer and encourage safe mobile usage.
+        </p>
+
+        <p>
+          These requirements support a more reliable and responsible inventory
+          management application.
+        </p>
+      </ion-card-content>
+    </ion-card>
+
+  </div>
+</ion-content>

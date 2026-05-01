@@ -1,0 +1,257 @@
+/* Defines shared glass effect variables for the Tab4 page. */
+:host {
+  --glass-white: rgba(255, 255, 255, 0.25);
+  --glass-white-strong: rgba(255, 255, 255, 0.40);
+  --glass-white-soft: rgba(255, 255, 255, 0.15);
+
+  --glass-border: rgba(255, 255, 255, 0.70);
+  --glass-shadow:
+    0 8px 12px rgba(31, 41, 55, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.35);
+  --glass-card-radius: 12px;
+  --glass-inner-radius: 10px;
+  --glass-icon-radius: 9px;
+  --glass-border-width: 1px;
+}
+
+/* Sets the main page background and keeps content positioning stable. */
+ion-content {
+  --background: #ffffff !important;
+  position: relative;
+}
+
+/* Forces the Ionic content background to remain white. */
+ion-content::part(background) {
+  background: #ffffff !important;
+}
+
+/* Main page spacing container for all privacy and security cards. */
+.page-container {
+  position: relative;
+  z-index: 1;
+  padding: 14px;
+  padding-bottom: calc(100px + var(--ion-safe-area-bottom, 0px));
+}
+
+/* Shared glass card style for all cards on Tab4. */
+ion-card {
+  margin: 0 0 14px 0;
+  border-radius: var(--glass-card-radius);
+  overflow: hidden;
+
+  --background: var(--glass-white) !important;
+  background: var(--glass-white) !important;
+
+  border: var(--glass-border-width) solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+/* Header area style inside each card. */
+ion-card-header {
+  background: rgba(255, 255, 255, 0.4);
+  padding: 16px;
+}
+
+/* Content area style inside each card. */
+ion-card-content {
+  background: rgba(255, 255, 255, 0.4);
+  padding: 14px 16px 16px 16px;
+}
+
+/* Main title style for card headings. */
+ion-card-title {
+  font-size: 20px;
+  font-weight: 800;
+  color: #1f2937;
+  line-height: 1.2;
+}
+
+/* Subtitle style for requirement card descriptions. */
+ion-card-subtitle {
+  margin-top: 5px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #66696e;
+  line-height: 1.25;
+}
+
+/* Stacks the hero title and fixed subtitle vertically. */
+.hero-title-stack {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 5px;
+}
+
+/* Fixed subtitle used under the main hero title. */
+.hero-fixed-subtitle {
+  display: block;
+  margin: 0;
+  padding: 0;
+
+  font-size: 18px;
+  font-weight: 600;
+  color: #66696e;
+  line-height: 1.25;
+}
+
+/* Stronger glass background for the introduction card. */
+.hero-card {
+  --background: var(--glass-white-strong) !important;
+  background: var(--glass-white-strong) !important;
+}
+
+/* Larger title style for the hero card. */
+.hero-card ion-card-title {
+  font-size: 23px;
+}
+
+/* Standard requirement card glass background. */
+.requirement-card {
+  --background: var(--glass-white) !important;
+  background: var(--glass-white) !important;
+}
+
+/* Removes the bottom margin from the final summary card. */
+.final-card {
+  margin-bottom: 0;
+}
+
+/* Aligns each card icon with its title and subtitle text. */
+.card-title-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Glass icon container used in each requirement card. */
+.icon-box {
+  width: 50px;
+  height: 50px;
+  min-width: 50px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: var(--glass-icon-radius);
+  border: var(--glass-border-width) solid var(--glass-border);
+  background: var(--glass-white-strong);
+  box-shadow: var(--glass-shadow);
+
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* Icon size and colour inside the glass icon box. */
+.icon-box ion-icon {
+  font-size: 30px;
+  color: #111827;
+}
+
+/* Paragraph text style for privacy and security explanations. */
+p {
+  margin: 0;
+  line-height: 1.55;
+  color: #333;
+  font-size: 15px;
+  font-weight: 400;
+}
+
+/* Adds spacing between consecutive paragraphs. */
+p+p {
+  margin-top: 10px;
+}
+
+/* Shared button style for buttons used on this page. */
+ion-button {
+  height: 46px;
+  margin-top: 14px;
+
+  --border-radius: var(--glass-inner-radius);
+  --background: var(--glass-white-strong);
+  --background-hover: rgba(255, 255, 255, 0.48);
+  --background-activated: rgba(255, 255, 255, 0.56);
+  --box-shadow: var(--glass-shadow);
+  --color: #111827;
+
+  font-weight: 700;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+/* Native Ionic button styling for the glass button effect. */
+ion-button::part(native) {
+  border: var(--glass-border-width) solid var(--glass-border);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+/* Responsive adjustments for narrow mobile screens. */
+@media (max-width: 360px) {
+  /* Reduces page padding on small screens. */
+  .page-container {
+    padding: 10px;
+    padding-bottom: calc(88px + var(--ion-safe-area-bottom, 0px));
+  }
+
+  /* Reduces spacing between cards on small screens. */
+  ion-card {
+    margin-bottom: 12px;
+  }
+
+  /* Reduces card header padding on small screens. */
+  ion-card-header {
+    padding: 14px;
+  }
+
+  /* Reduces card content padding on small screens. */
+  ion-card-content {
+    padding: 12px 14px 14px 14px;
+  }
+
+  /* Smaller card title size for narrow screens. */
+  ion-card-title {
+    font-size: 18px;
+  }
+
+  /* Smaller card subtitle size for narrow screens. */
+  ion-card-subtitle {
+    font-size: 13px;
+  }
+
+  /* Smaller hero subtitle size for narrow screens. */
+  .hero-fixed-subtitle {
+    font-size: 13px;
+  }
+
+  /* Smaller hero title size for narrow screens. */
+  .hero-card ion-card-title {
+    font-size: 20px;
+  }
+
+  /* Reduces spacing between icon and text on narrow screens. */
+  .card-title-row {
+    gap: 10px;
+  }
+
+  /* Smaller icon box size for narrow screens. */
+  .icon-box {
+    width: 42px;
+    height: 42px;
+    min-width: 42px;
+  }
+
+  /* Smaller icon size for narrow screens. */
+  .icon-box ion-icon {
+    font-size: 26px;
+  }
+
+  /* Smaller paragraph text for narrow screens. */
+  p {
+    font-size: 14px;
+    line-height: 1.5;
+  }
+}

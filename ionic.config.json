@@ -1,5 +1,7 @@
 {
   "name": "A3",
-  "integrations": {},
+  "integrations": {
+    "cordova": {}
+  },
   "type": "angular"
 }

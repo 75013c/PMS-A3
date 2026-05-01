@@ -1,0 +1,1462 @@
+/* Main page container that controls Tab2 vertical layout and scrolling. */
+.page-container {
+  position: relative;
+  z-index: 1;
+  height: 100%;
+  box-sizing: border-box;
+  padding: 14px;
+  padding-bottom: calc(100px + var(--ion-safe-area-bottom, 0px));
+
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  overflow-y: auto;
+}
+
+/* Top section that contains the Add Item heading and clickable entry card. */
+.add-item-section {
+  width: 100%;
+  min-height: 0;
+  flex: 0 0 calc((92% - 14px) / 2);
+  margin-top: 19px;
+
+
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: 12px;
+}
+
+/* Heading block above the add item card. */
+.add-section-heading {
+  text-align: center;
+}
+
+/* Main title text for the add item area. */
+.add-section-title {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.15;
+  color: #1b1b1b;
+  text-align: center;
+  letter-spacing: 0.01em;
+}
+
+/* Step-by-step description shown under the Add Item title. */
+.add-section-description {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+
+  margin: 8px 0 0 11px;
+  font-size: 18px;
+  line-height: 1.25;
+  color: #535353;
+  text-align: left;
+}
+
+/* Keeps each instruction step on its own line. */
+.add-section-description span {
+  display: block;
+}
+
+/* Large clickable glass card used to open the add form. */
+.add-item-card {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: var(--glass-card-radius);
+  border: var(--glass-border-width) solid var(--glass-border);
+  background: rgba(230, 255, 238, 0.4);
+  box-shadow: var(--glass-shadow);
+
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+
+  overflow: hidden;
+  cursor: pointer;
+
+  transition:
+    opacity 220ms linear,
+    transform 220ms ease,
+    border-color 180ms ease,
+    background 180ms ease;
+  will-change: transform, opacity;
+}
+
+/* Hover feedback for desktop pointer devices. */
+.add-item-card:hover {
+  border-color: rgba(255, 255, 255, 0.86);
+  background: rgba(215, 227, 255, 0.58);
+}
+
+/* Touch/click press feedback for the add item card. */
+.add-item-card:active {
+  transform: scale(0.995);
+}
+
+/* Hides the card label while the add form animation is opening. */
+.add-item-card-source-hidden .add-main-label {
+  opacity: 0;
+  transform: translate3d(0, -34px, 0);
+}
+
+/* Center label inside the add item card. */
+.add-main-label {
+  position: relative;
+  z-index: 1;
+
+  color: #111827;
+  font-size: 28px;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: 0.01em;
+  text-align: center;
+
+  pointer-events: none;
+  user-select: none;
+
+  transition:
+    opacity 130ms linear,
+    transform 130ms ease-in;
+  will-change: opacity, transform;
+}
+
+/* Add form animation */
+
+/* Full-screen overlay behind the animated add form panel. */
+.add-form-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  opacity: 0;
+  background: rgba(15, 23, 42, 0);
+  pointer-events: auto;
+  transition:
+    opacity 130ms linear,
+    background 130ms linear;
+}
+
+.add-form-overlay.open {
+  opacity: 1;
+  background: rgba(15, 23, 42, 0.10);
+}
+
+.add-form-overlay.closing {
+  opacity: 1;
+  background: rgba(15, 23, 42, 0.10);
+}
+
+/* Animated glass cover shared by the add form and item detail transitions. */
+.add-form-cover,
+.item-detail-cover {
+  position: fixed;
+  z-index: 1001;
+  overflow: hidden;
+  pointer-events: none;
+
+  background: var(--glass-white-soft);
+  border: var(--glass-border-width) solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+
+  transform-origin: 50% 50%;
+  transform: translate3d(0px, 0px, 0px);
+
+  transition:
+    left 250ms ease-in-out,
+    top 250ms ease-in-out,
+    width 250ms ease-in-out,
+    height 250ms ease-in-out,
+    border-radius 250ms ease-in-out,
+    background 250ms ease-in-out,
+    box-shadow 250ms ease-in-out,
+    backdrop-filter 250ms ease-in-out,
+    -webkit-backdrop-filter 250ms ease-in-out;
+
+  will-change: left, top, width, height;
+  backface-visibility: hidden;
+}
+
+.add-form-cover.open,
+.item-detail-cover.open {
+  border-radius: var(--glass-card-radius) !important;
+  background: var(--glass-white-soft);
+  box-shadow: var(--glass-shadow);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+.add-form-cover.closing,
+.item-detail-cover.closing {
+  background: var(--glass-white-soft);
+  box-shadow: var(--glass-shadow);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+/* Fixed panel container shared by the add form and featured item detail view. */
+.add-form-panel,
+.item-detail-panel {
+  position: fixed;
+  z-index: 1002;
+  border-radius: var(--glass-card-radius);
+
+  opacity: 0;
+  pointer-events: none;
+  overflow: hidden;
+
+  transform: translate3d(0, 10px, 0);
+  transition:
+    opacity 130ms linear,
+    transform 130ms ease-out;
+  will-change: opacity, transform;
+}
+
+.add-form-panel.open,
+.item-detail-panel.open {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  pointer-events: auto;
+}
+
+.add-form-panel.closing,
+.item-detail-panel.closing {
+  opacity: 0;
+  transform: translate3d(0, 10px, 0);
+  pointer-events: none;
+  transition:
+    opacity 130ms linear 0ms,
+    transform 130ms ease-out 0ms;
+}
+
+/* Scrollable inner content area for form and detail panels. */
+.add-form-content,
+.item-detail-content {
+  height: 100%;
+  overflow-y: auto;
+  padding: 18px;
+  padding-top: calc(var(--ion-safe-area-top, 0px) + 18px);
+  padding-bottom: calc(var(--ion-safe-area-bottom, 0px) + 18px);
+  background: transparent;
+}
+
+/* Top title row inside the add form and item detail panels. */
+.add-form-topbar,
+.item-detail-topbar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 18px;
+  min-height: 50px;
+  opacity: 0;
+  transform: translate3d(0, 14px, 0);
+  transition:
+    opacity 130ms linear,
+    transform 130ms ease-out;
+}
+
+/* Centers the panel heading text. */
+.add-form-heading,
+.item-detail-heading {
+  width: 100%;
+  text-align: center;
+}
+
+/* Reveals the form/detail heading after the panel has opened. */
+.add-form-panel.open .add-form-topbar,
+.item-detail-panel.open .item-detail-topbar {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  transition-delay: 20ms;
+}
+
+/* Uppercase panel heading style. */
+.add-form-eyebrow,
+.item-detail-eyebrow {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: #5c5c5c;
+  text-align: center;
+}
+
+/* Circular close buttons for closing overlay panels. */
+.add-form-close-button,
+.detail-close-button {
+  position: absolute;
+  right: 18px;
+  top: 18px;
+  z-index: 5;
+  opacity: 0;
+  transform: translate3d(0, 14px, 0);
+  transition:
+    opacity 130ms linear,
+    transform 130ms ease-out;
+
+  width: 50px;
+  height: 50px;
+  min-width: 50px;
+  min-height: 50px;
+  max-width: 50px;
+  max-height: 50px;
+
+  margin: 0;
+
+  --padding-start: 0;
+  --padding-end: 0;
+  --padding-top: 0;
+  --padding-bottom: 0;
+  --border-radius: 999px;
+  --background: transparent;
+  --background-hover: transparent;
+  --background-activated: transparent;
+  --box-shadow: none;
+
+  border: none;
+  box-shadow: none;
+  background: transparent;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  overflow: visible;
+
+  ion-icon {
+    width: 35px;
+    height: 35px;
+    font-size: 35px;
+    line-height: 1;
+    color: #111827;
+  }
+}
+
+/* Reveals the close button when the panel is open. */
+.add-form-panel.open .add-form-close-button,
+.item-detail-panel.open .detail-close-button {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  transition-delay: 20ms;
+}
+
+/* Hides the close button during the closing animation. */
+.add-form-panel.closing .add-form-close-button,
+.item-detail-panel.closing .detail-close-button {
+  opacity: 0;
+  transform: translate3d(0, 10px, 0);
+  transition-delay: 0ms;
+}
+
+/* Native Ionic button styling for circular close buttons. */
+.add-form-close-button::part(native),
+.detail-close-button::part(native) {
+  width: 50px;
+  height: 50px;
+  min-width: 50px;
+  min-height: 50px;
+  max-width: 50px;
+  max-height: 50px;
+  padding: 0;
+  box-sizing: border-box;
+  border: none;
+  box-shadow: none;
+  border-radius: 999px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.30);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* Hover background for circular close buttons. */
+.add-form-close-button:hover::part(native),
+.detail-close-button:hover::part(native) {
+  background: rgba(255, 255, 255, 0.44);
+}
+
+/* Active press background for circular close buttons. */
+.add-form-close-button:active::part(native),
+.detail-close-button:active::part(native) {
+  background: rgba(255, 255, 255, 0.52);
+}
+
+/* Shared detail form */
+
+/* Shared vertical layout for add form fields and detail rows. */
+.detail-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-bottom: 4px;
+}
+
+/* Individual animated form field or detail row. */
+.detail-field {
+  opacity: 0;
+  transform: translate3d(0, 18px, 0);
+  transition:
+    opacity 130ms linear,
+    transform 130ms ease-out;
+}
+
+/* Reveals fields after the panel is opened. */
+.add-form-panel.open .detail-field,
+.item-detail-panel.open .detail-field {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+
+.add-form-panel.open .detail-field:nth-child(1),
+.item-detail-panel.open .detail-field:nth-child(1) {
+  transition-delay: 40ms;
+}
+
+.add-form-panel.open .detail-field:nth-child(2),
+.item-detail-panel.open .detail-field:nth-child(2) {
+  transition-delay: 60ms;
+}
+
+.add-form-panel.open .detail-field:nth-child(3),
+.item-detail-panel.open .detail-field:nth-child(3) {
+  transition-delay: 80ms;
+}
+
+.add-form-panel.open .detail-field:nth-child(4),
+.item-detail-panel.open .detail-field:nth-child(4) {
+  transition-delay: 100ms;
+}
+
+.add-form-panel.open .detail-field:nth-child(5),
+.item-detail-panel.open .detail-field:nth-child(5) {
+  transition-delay: 120ms;
+}
+
+.add-form-panel.open .detail-field:nth-child(6),
+.item-detail-panel.open .detail-field:nth-child(6) {
+  transition-delay: 140ms;
+}
+
+.add-form-panel.open .detail-field:nth-child(7),
+.item-detail-panel.open .detail-field:nth-child(7) {
+  transition-delay: 160ms;
+}
+
+.add-form-panel.open .detail-field:nth-child(8),
+.item-detail-panel.open .detail-field:nth-child(8) {
+  transition-delay: 180ms;
+}
+
+.item-detail-panel.open .detail-field:nth-child(9) {
+  transition-delay: 200ms;
+}
+
+.add-form-panel.open .add-form-actions {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  transition-delay: 200ms;
+}
+
+.add-form-panel.closing .add-form-topbar,
+.add-form-panel.closing .detail-field,
+.add-form-panel.closing .add-form-actions,
+.item-detail-panel.closing .item-detail-topbar,
+.item-detail-panel.closing .detail-field {
+  opacity: 0;
+  transform: translate3d(0, 10px, 0);
+  transition-delay: 0ms;
+}
+
+/* Label style for each field in the form. */
+.detail-field-label {
+  display: block;
+  padding-left: 10px;
+  margin: 0 0 8px 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #111827;
+  line-height: 1.2;
+}
+
+/* Required field asterisk style. */
+.detail-required-mark {
+  color: #111827;
+}
+
+/* Glass value/input box shared by form controls and detail values. */
+.detail-value-box {
+  min-height: 45px;
+  width: 100%;
+  box-sizing: border-box;
+
+  display: flex;
+  align-items: center;
+  padding: 8px 12px;
+
+  border-radius: var(--glass-inner-radius);
+  border: var(--glass-border-width) solid var(--glass-border);
+  background: var(--glass-white-strong);
+  color: #111827;
+  font-size: 17px;
+  font-weight: 400;
+  line-height: 1.35;
+  word-break: break-word;
+  box-shadow: var(--glass-shadow);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+/* Fixed-height container for add form input controls. */
+.add-input-value-box {
+  height: 45px;
+  min-height: 45px;
+  overflow: hidden;
+}
+
+/* Larger box used for multiline note content. */
+.detail-value-box-note {
+  height: auto;
+  min-height: 96px;
+  align-items: flex-start;
+  overflow: hidden;
+}
+
+/* Native input control styled to fit the glass form design. */
+.add-native-control {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  min-width: 0;
+  box-sizing: border-box;
+
+  display: block;
+
+  border: none;
+  outline: none;
+  background: transparent;
+
+  color: #111827;
+  font-family: inherit;
+  font-size: 17px;
+  font-weight: 400;
+  line-height: 1.35;
+
+  padding: 0;
+  margin: 0;
+}
+
+/* Placeholder colour for native form controls. */
+.add-native-control::placeholder {
+  color: #6b7280;
+  opacity: 1;
+}
+
+/* Textarea size for the optional note field. */
+.add-native-textarea {
+  height: 80px;
+  min-height: 80px;
+  resize: none;
+}
+
+/* Custom opaque liquid-glass select menus */
+
+/* Wrapper for custom enum dropdown fields. */
+.glass-select-field {
+  position: relative;
+  z-index: 5;
+}
+
+/* Raises the active dropdown above nearby fields. */
+.glass-select-field-open {
+  z-index: 30;
+}
+
+/* Input-like container for the custom dropdown trigger. */
+.glass-select-value-box {
+  position: relative;
+  overflow: visible;
+  padding: 0;
+}
+
+/* Button that opens each custom dropdown menu. */
+.glass-select-control {
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+
+  padding: 0 12px;
+  margin: 0;
+
+  border: none;
+  outline: none;
+  background: transparent;
+
+  color: #111827;
+  font-family: inherit;
+  font-size: 17px;
+  font-weight: 400;
+  line-height: 1.35;
+  text-align: left;
+
+  cursor: pointer;
+}
+
+/* Keeps selected dropdown text on one line. */
+.glass-select-control span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Dropdown arrow icon style. */
+.glass-select-control ion-icon {
+  flex-shrink: 0;
+  font-size: 20px;
+  color: #111827;
+}
+
+/* Placeholder text colour for empty select values. */
+.placeholder-text {
+  color: #767676;
+}
+
+/* Floating menu that displays enum options. */
+.glass-select-menu {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(100% + 8px);
+  z-index: 40;
+
+  padding: 6px;
+
+  border-radius: var(--glass-inner-radius);
+  border: var(--glass-border-width) solid rgba(255, 255, 255, 0.95);
+
+  background: #e8e8e8;
+
+  box-shadow:
+    0 12px 22px rgba(31, 41, 55, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.65);
+
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+
+  overflow: hidden;
+}
+
+/* Individual selectable option inside a custom dropdown menu. */
+.glass-select-option {
+  width: 100%;
+  min-height: 38px;
+
+  display: flex;
+  align-items: center;
+
+  padding: 0 12px;
+  margin: 0;
+
+  border: none;
+  outline: none;
+  border-radius: calc(var(--glass-inner-radius) - 3px);
+
+  background: #e8e8e8;
+
+  color: #111827;
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 500;
+  text-align: left;
+
+  cursor: pointer;
+}
+
+/* Hover feedback for dropdown options. */
+.glass-select-option:hover {
+  background: #f3f4f6;
+}
+
+/* Active press feedback for dropdown options. */
+.glass-select-option:active {
+  background: #e5e7eb;
+}
+
+/* Placeholder option used to reset enum selections. */
+.empty-select-option {
+  color: #6b7280;
+}
+
+/* Action row containing Clear and Add buttons. */
+.add-form-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+  margin-top: 20px;
+
+  opacity: 0;
+  transform: translate3d(0, 18px, 0);
+  transition:
+    opacity 130ms linear,
+    transform 130ms ease-out;
+}
+
+/* Shared style for add form action buttons. */
+.add-action-button {
+  height: 50px;
+  min-height: 50px;
+  max-height: 50px;
+  margin: 0;
+
+  --height: 50px;
+  --min-height: 50px;
+  --border-radius: var(--glass-inner-radius);
+  --padding-start: 16px;
+  --padding-end: 16px;
+  --padding-top: 0;
+  --padding-bottom: 0;
+  --box-shadow: none;
+
+  font-size: 20px;
+  font-weight: 400;
+  letter-spacing: 0.8px;
+  text-transform: none;
+}
+
+/* Native Ionic button styling for add form actions. */
+.add-action-button::part(native) {
+  height: 50px;
+  min-height: 50px;
+  max-height: 50px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+
+  border-radius: var(--glass-inner-radius);
+  border: var(--glass-border-width) solid var(--glass-border);
+  box-shadow: none;
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+/* Clear button colour style. */
+.clear-action-button {
+  --background: rgba(255, 255, 255, 0.48);
+  --background-hover: rgba(255, 255, 255, 0.58);
+  --background-activated: rgba(255, 255, 255, 0.68);
+  --color: #111827;
+}
+
+/* Native clear button background. */
+.clear-action-button::part(native) {
+  background: rgba(255, 255, 255, 0.48);
+}
+
+/* Submit button colour style. */
+.submit-action-button {
+  --background: rgba(215, 227, 255, 0.68);
+  --background-hover: rgba(215, 227, 255, 0.78);
+  --background-activated: rgba(215, 227, 255, 0.88);
+  --color: #111827;
+}
+
+/* Native submit button background. */
+.submit-action-button::part(native) {
+  background: rgba(215, 227, 255, 0.68);
+}
+
+/* Featured item list: same style as Tab1 item cards */
+
+/* Featured item list section below the add item area. */
+.featured-section {
+  margin-bottom: 12px;
+}
+
+/* Generic spacing for content sections. */
+.section-block {
+  margin-bottom: 12px;
+}
+
+/* Centered heading used above the featured item list. */
+.section-header {
+  margin: 4px 2px 12px 2px;
+  text-align: center;
+
+  h2 {
+    font-size: 24px;
+    font-weight: 800;
+    margin: 0;
+    color: #1f2937;
+  }
+
+  p {
+    margin: 8px 0 0 0;
+    font-size: 18px;
+    color: #6b7280;
+    text-align: center;
+  }
+}
+
+/* Featured item card using the same visual style as inventory cards. */
+.item-card {
+  margin: 0 0 14px 0;
+  border-radius: var(--glass-card-radius);
+  overflow: hidden;
+  --background: var(--glass-white) !important;
+  background: var(--glass-white) !important;
+  border: var(--glass-border-width) solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  transition:
+    opacity 220ms linear,
+    transform 220ms ease,
+    box-shadow 220ms ease,
+    border-color 220ms ease,
+    background 220ms ease;
+  will-change: transform, opacity;
+  cursor: pointer;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+
+  ion-card-header.item-header,
+  ion-card-content {
+    transition:
+      opacity 130ms linear,
+      transform 130ms ease-in;
+    will-change: opacity, transform;
+  }
+
+  ion-card-header.item-header {
+    padding: 12px 16px 0 16px;
+  }
+
+  ion-card-content {
+    padding: 12px 16px 16px 16px;
+    background: rgba(255, 255, 255, 0.08);
+  }
+}
+
+/* Desktop hover animation for item cards. */
+@media (hover: hover) and (pointer: fine) {
+  .item-card:hover {
+    transform: translate3d(0, -8px, 0) scale(1.01);
+    border-color: rgba(255, 255, 255, 0.86);
+    box-shadow:
+      0 18px 34px rgba(31, 41, 55, 0.18),
+      inset 0 1px 0 rgba(255, 255, 255, 0.42);
+  }
+}
+
+/* Touch press animation for item cards. */
+.item-card:active {
+  transform: translate3d(0, -5px, 0) scale(1.006);
+  border-color: rgba(255, 255, 255, 0.82);
+  box-shadow:
+    0 14px 28px rgba(31, 41, 55, 0.16),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+
+/* State applied to the selected card when opening detail view. */
+.item-card-detail-source {
+  pointer-events: none;
+}
+
+/* Hides selected card content during expansion animation. */
+.item-card-detail-source-hidden ion-card-header.item-header,
+.item-card-detail-source-hidden ion-card-content {
+  opacity: 0;
+  transform: translate3d(0, -34px, 0);
+}
+
+/* Fades out non-selected cards while detail view is open. */
+.item-card-detail-out {
+  opacity: 0;
+  transform: translate3d(0, -34px, 0) scale(0.985);
+  pointer-events: none;
+}
+
+/* Header area for each featured item card. */
+.item-header {
+  padding: 10px 16px 0 16px;
+}
+
+/* Green stock status header gradient. */
+.header-in-stock {
+  background: linear-gradient(to bottom,
+      rgba(151, 223, 175, 0.8) 0%,
+      rgba(173, 225, 195, 0.4) 50%,
+      rgba(255, 255, 255, 0.01) 100%);
+}
+
+/* Yellow low-stock header gradient. */
+.header-low-stock {
+  background: linear-gradient(to bottom,
+      rgba(240, 220, 141, 0.8) 0%,
+      rgba(234, 222, 175, 0.4) 50%,
+      rgba(255, 255, 255, 0.01) 100%);
+}
+
+/* Red out-of-stock header gradient. */
+.header-out-of-stock {
+  background: linear-gradient(to bottom,
+      rgba(237, 147, 147, 0.8) 0%,
+      rgba(240, 192, 192, 0.4) 50%,
+      rgba(255, 255, 255, 0.01) 100%);
+}
+
+/* Layout row for item title, detail hint, and stock status. */
+.item-title-row {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+/* Center badge showing that the item card can be opened. */
+.item-click-hint {
+  position: absolute;
+  left: 50%;
+  top: 30px;
+  transform: translateX(-50%);
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+
+  padding: 3px 6px 3px 16px;
+  border-radius: 999px;
+  border: var(--glass-border-width) solid var(--glass-border);
+  background: var(--glass-white-strong);
+  box-shadow: var(--glass-shadow);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+
+  pointer-events: none;
+  z-index: 2;
+
+  span {
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 1;
+    color: #636363;
+    white-space: nowrap;
+  }
+
+  ion-icon {
+    font-size: 16px;
+    color: #4b5563;
+  }
+}
+
+/* Item name and category column. */
+.item-title-group {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-width: 0;
+  flex: 1;
+  margin-left: 5px;
+
+  ion-card-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #111827;
+    margin: 0;
+    line-height: 1.15;
+  }
+
+  ion-card-subtitle {
+    margin-top: 12px;
+    font-size: 15px;
+    font-weight: 500;
+    color: #000000;
+    line-height: 1.2;
+  }
+}
+
+/* Right-side stock status and featured label column. */
+.item-status-column {
+  flex-shrink: 0;
+  max-width: 128px;
+  margin-left: auto;
+  margin-right: 5px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+/* Stock status text on item cards. */
+.status-text {
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.15;
+  color: #111827;
+  text-align: right;
+  white-space: normal;
+  max-width: 125px;
+  margin: 0;
+}
+
+/* Featured label text on item cards. */
+.featured-text {
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.2;
+  color: #000000;
+  text-align: right;
+  white-space: nowrap;
+  margin-top: 12px;
+}
+
+/* Two-column grid for compact item attributes. */
+.item-info-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 12px;
+  padding: 0;
+}
+
+/* Glass box for each compact item attribute. */
+.info-box {
+  background: var(--glass-white);
+  border: var(--glass-border-width) solid var(--glass-border);
+  border-radius: var(--glass-inner-radius);
+  padding: 9px 10px;
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+
+  .info-label {
+    display: inline-block;
+    font-size: 15px;
+    font-weight: 600;
+    color: #313131;
+    margin: 0;
+    white-space: nowrap;
+  }
+
+  strong {
+    font-size: 15px;
+    font-weight: 500;
+    color: #111827;
+    text-align: right;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+/* Optional note display box for featured item cards. */
+.note-box {
+  margin-top: 12px;
+  background: var(--glass-white);
+  border: var(--glass-border-width) solid var(--glass-border);
+  border-radius: var(--glass-inner-radius);
+  padding: 9px 10px;
+  color: #111827;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* Label for the note display area. */
+.note-label {
+  font-size: 15px;
+  font-weight: 600;
+  color: #313131;
+  line-height: 1.25;
+  margin-bottom: 6px;
+}
+
+/* Note body text style. */
+.note-text {
+  font-size: 15px;
+  font-weight: 500;
+  color: #111827;
+  line-height: 1.35;
+  word-break: break-word;
+}
+
+/* Empty state card shown when there are no featured items. */
+.empty-card {
+  margin: 0;
+  border-radius: var(--glass-card-radius);
+  text-align: center;
+  overflow: hidden;
+  --background: var(--glass-white-strong) !important;
+  background: var(--glass-white-strong) !important;
+  border: var(--glass-border-width) solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+
+  ion-card-content {
+    padding: 28px 18px;
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  ion-icon {
+    font-size: 48px;
+    color: var(--ion-color-medium);
+  }
+
+  h2 {
+    font-size: 18px;
+    font-weight: 800;
+    margin: 10px 0 4px 0;
+    color: #1f2937;
+  }
+
+  p {
+    margin: 0;
+    color: #6b7280;
+    font-size: 14px;
+  }
+}
+
+/* Featured item detail overlay */
+
+/* Full-screen overlay behind the featured item detail panel. */
+.item-detail-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  opacity: 0;
+  background: rgba(15, 23, 42, 0);
+  pointer-events: auto;
+  transition:
+    opacity 130ms linear,
+    background 130ms linear;
+}
+
+/* Visible overlay state for item detail view. */
+.item-detail-overlay.open {
+  opacity: 1;
+  background: rgba(15, 23, 42, 0.10);
+}
+
+/* Hidden overlay state while closing item detail view. */
+.item-detail-overlay.closing {
+  opacity: 0;
+  background: rgba(15, 23, 42, 0);
+}
+
+/* Responsive adjustments for narrow mobile screens. */
+@media (max-width: 360px) {
+/* Main page container that controls Tab2 vertical layout and scrolling. */
+  .page-container {
+    padding: 10px;
+    padding-bottom: calc(88px + var(--ion-safe-area-bottom, 0px));
+    gap: 18px;
+  }
+
+/* Top section that contains the Add Item heading and clickable entry card. */
+  .add-item-section {
+    flex-basis: calc((80% - 10px) / 2);
+    gap: 7px;
+  }
+
+/* Main title text for the add item area. */
+  .add-section-title {
+    font-size: 19px;
+  }
+
+/* Step-by-step description shown under the Add Item title. */
+  .add-section-description {
+    margin-top: 4px;
+    font-size: 12px;
+    line-height: 1.2;
+  }
+
+/* Center label inside the add item card. */
+  .add-main-label {
+    font-size: 22px;
+  }
+
+/* Scrollable inner content area for form and detail panels. */
+  .add-form-content,
+  .item-detail-content {
+    padding: 16px;
+    padding-top: calc(var(--ion-safe-area-top, 0px) + 16px);
+    padding-bottom: calc(var(--ion-safe-area-bottom, 0px) + 16px);
+  }
+
+/* Circular close buttons for closing overlay panels. */
+  .add-form-close-button,
+  .detail-close-button {
+    right: 16px;
+    top: 16px;
+  }
+
+/* Uppercase panel heading style. */
+  .add-form-eyebrow,
+  .item-detail-eyebrow {
+    font-size: 22px;
+  }
+
+/* Shared vertical layout for add form fields and detail rows. */
+  .detail-form {
+    gap: 16px;
+  }
+
+/* Label style for each field in the form. */
+  .detail-field-label {
+    font-size: 17px;
+  }
+
+/* Glass value/input box shared by form controls and detail values. */
+  .detail-value-box {
+    min-height: 54px;
+    font-size: 16px;
+    padding: 11px 14px;
+  }
+
+/* Fixed-height container for add form input controls. */
+  .add-input-value-box {
+    height: 54px;
+    min-height: 54px;
+  }
+
+/* Larger box used for multiline note content. */
+  .detail-value-box-note {
+    height: auto;
+    min-height: 96px;
+  }
+
+/* Native input control styled to fit the glass form design. */
+  .add-native-control {
+    height: 100%;
+    min-height: 0;
+    font-size: 16px;
+  }
+
+/* Textarea size for the optional note field. */
+  .add-native-textarea {
+    height: 74px;
+    min-height: 74px;
+  }
+
+/* Input-like container for the custom dropdown trigger. */
+  .glass-select-value-box {
+    padding: 0;
+  }
+
+/* Button that opens each custom dropdown menu. */
+  .glass-select-control {
+    padding: 0 14px;
+    font-size: 16px;
+  }
+
+/* Individual selectable option inside a custom dropdown menu. */
+  .glass-select-option {
+    min-height: 38px;
+    font-size: 15px;
+  }
+
+/* Shared style for add form action buttons. */
+  .add-action-button {
+    height: 50px;
+    min-height: 50px;
+    max-height: 50px;
+    font-size: 16px;
+
+    --height: 50px;
+    --min-height: 50px;
+  }
+
+/* Native Ionic button styling for add form actions. */
+  .add-action-button::part(native) {
+    height: 50px;
+    min-height: 50px;
+    max-height: 50px;
+  }
+
+  .section-header h2 {
+    font-size: 18px;
+  }
+
+  .section-header p {
+    font-size: 14px;
+  }
+}
+
+/* Greyed-out display style for the auto-generated Item ID field. */
+.readonly-id-value-box {
+  background: rgba(156, 163, 175, 0.22);
+  border-color: rgba(107, 114, 128, 0.35);
+}
+
+/* Disabled-looking input style for the readonly Item ID control. */
+.readonly-id-control {
+  color: #6b7280;
+  cursor: not-allowed;
+}
+
+/* Placeholder colour for readonly Item ID input. */
+.readonly-id-control::placeholder {
+  color: #9ca3af;
+}
+
+/* Low-height device optimization */
+
+/* Compact layout adjustments for low-height mobile screens. */
+@media (max-height: 700px) {
+/* Scrollable inner content area for form and detail panels. */
+  .add-form-content,
+  .item-detail-content {
+    padding: 12px;
+    padding-top: calc(var(--ion-safe-area-top, 0px) + 12px);
+    padding-bottom: calc(var(--ion-safe-area-bottom, 0px) + 18px);
+  }
+
+/* Top title row inside the add form and item detail panels. */
+  .add-form-topbar,
+  .item-detail-topbar {
+    min-height: 42px;
+    margin-bottom: 12px;
+  }
+
+/* Uppercase panel heading style. */
+  .add-form-eyebrow,
+  .item-detail-eyebrow {
+    font-size: 20px;
+  }
+
+/* Shared vertical layout for add form fields and detail rows. */
+  .detail-form {
+    gap: 8px;
+  }
+
+/* Label style for each field in the form. */
+  .detail-field-label {
+    font-size: 16px;
+    margin-bottom: 6px;
+  }
+
+/* Glass value/input box shared by form controls and detail values. */
+  .detail-value-box {
+    min-height: 40px;
+    font-size: 15px;
+    padding: 8px 10px;
+  }
+
+/* Larger box used for multiline note content. */
+  .detail-value-box-note {
+    min-height: 78px;
+  }
+
+/* Fixed-height container for add form input controls. */
+  .add-input-value-box {
+    height: 44px;
+    min-height: 44px;
+  }
+
+/* Native input control styled to fit the glass form design. */
+  .add-native-control {
+    font-size: 15px;
+  }
+
+/* Textarea size for the optional note field. */
+  .add-native-textarea {
+    height: 68px;
+    min-height: 68px;
+  }
+
+/* Circular close buttons for closing overlay panels. */
+  .add-form-close-button,
+  .detail-close-button {
+    right: 12px;
+    top: 12px;
+  }
+
+/* Action row containing Clear and Add buttons. */
+  .add-form-actions {
+    margin-top: 12px;
+    gap: 10px;
+  }
+
+  .add-form-button,
+  .add-form-button::part(native) {
+    height: 44px;
+    min-height: 44px;
+    font-size: 15px;
+  }
+}
+
+/* Correct Tab2 scrollbar display */
+
+/* Main page container that controls Tab2 vertical layout and scrolling. */
+.page-container {
+  overflow-y: visible;
+}
+
+/* Main Ionic scroll container scrollbar behaviour. */
+ion-content.glass-page::part(scroll) {
+  overflow-y: auto;
+  scrollbar-width: thin;
+  -ms-overflow-style: auto;
+}
+
+/* WebKit scrollbar size for the main content area. */
+ion-content.glass-page::part(scroll)::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+  display: block;
+}
+
+/* Transparent track for the main scrollbar. */
+ion-content.glass-page::part(scroll)::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Rounded thumb for the main scrollbar. */
+ion-content.glass-page::part(scroll)::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: rgba(31, 41, 55, 0.22);
+}
+
+/* Scrollable inner content area for form and detail panels. */
+.add-form-content,
+.item-detail-content {
+  scrollbar-width: thin;
+  -ms-overflow-style: auto;
+}
+
+/* WebKit scrollbar size for form and detail scroll areas. */
+.add-form-content::-webkit-scrollbar,
+.item-detail-content::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+  display: block;
+}
+
+/* Transparent track for form and detail scrollbars. */
+.add-form-content::-webkit-scrollbar-track,
+.item-detail-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Rounded thumb for form and detail scrollbars. */
+.add-form-content::-webkit-scrollbar-thumb,
+.item-detail-content::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: rgba(31, 41, 55, 0.22);
+}

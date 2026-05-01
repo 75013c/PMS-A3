@@ -1,0 +1,385 @@
+<!-- Top header for the Add Item page. -->
+<ion-header class="app-top-header">
+  <ion-toolbar class="app-top-toolbar">
+    <ion-title>Add Item</ion-title>
+
+    <!-- Help button opens the page usage guide. -->
+    <ion-buttons slot="end">
+      <ion-button class="help-widget-button" fill="clear"
+        style="font-size: 38px; width: 46px; height: 46px; --padding-start: 0; --padding-end: 0; --padding-top: 0; --padding-bottom: 0;"
+        aria-label="Open page help" (click)="showHelp()">
+        <ion-icon name="help-circle-outline" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<!-- Main content area for adding items and viewing featured items. -->
+<ion-content [fullscreen]="true" class="glass-page">
+  <div class="aurora-background" aria-hidden="true"></div>
+
+  <div class="page-container">
+
+    <!-- Entry section for opening the Add Item form. -->
+    <section class="add-item-section">
+      <div class="add-section-heading">
+        <h2 class="add-section-title">Add Item</h2>
+        <p class="add-section-description">
+          <span>1. Enter Item Information</span>
+          <span>2. Fill Required Fields</span>
+          <span>3. Submit New Record</span>
+        </p>
+      </div>
+
+      <!-- Clickable card that launches the animated add form panel. -->
+      <div class="add-item-card" [class.add-item-card-source-hidden]="isAddCardSourceHidden" role="button" tabindex="0"
+        aria-label="Open Add Item form" (click)="openAddForm($event)" (keydown)="onAddCardKeydown($event)">
+        <div class="add-main-label">
+          Click To Add Item
+        </div>
+      </div>
+    </section>
+
+    <!-- Featured item list section. -->
+    <section class="section-block featured-section">
+      <div class="section-header">
+        <h2>Featured Items</h2>
+        <p>{{ featuredItemListSummary }}</p>
+      </div>
+
+      <!-- Featured item cards are shown only when loading has finished and records exist. -->
+      <div *ngIf="!loadingFeaturedItems && featuredItems.length > 0">
+        <ion-card class="item-card" *ngFor="let item of featuredItems; let i = index"
+          [class.item-card-detail-source]="isItemDetailVisible && selectedItemIndex === i"
+          [class.item-card-detail-source-hidden]="isItemDetailSourceHidden && selectedItemIndex === i"
+          [class.item-card-detail-out]="isItemDetailVisible && selectedItemIndex !== null && selectedItemIndex !== i"
+          (click)="openItemDetail(item, i, $event)">
+
+          <!-- Card header changes colour style according to stock status. -->
+          <ion-card-header class="item-header"
+            [class.header-in-stock]="(item.stockStatus || '').toLowerCase() === 'in stock'"
+            [class.header-low-stock]="(item.stockStatus || '').toLowerCase() === 'low stock'"
+            [class.header-out-of-stock]="(item.stockStatus || '').toLowerCase() === 'out of stock'">
+
+            <div class="item-title-row">
+              <!-- Item name and category display area. -->
+              <div class="item-title-group">
+                <ion-card-title>{{ getItemDisplayName(item) }}</ion-card-title>
+                <ion-card-subtitle>
+                  {{ item.category || 'Miscellaneous' }}
+                </ion-card-subtitle>
+              </div>
+
+              <!-- Visual hint showing that the card can be opened. -->
+              <div class="item-click-hint" aria-hidden="true">
+                <span>View Details</span>
+                <ion-icon name="chevron-forward-outline"></ion-icon>
+              </div>
+
+              <!-- Stock status and featured label display area. -->
+              <div class="item-status-column">
+                <div class="status-text">
+                  {{ item.stockStatus || 'Unknown' }}
+                </div>
+
+                <div class="featured-text" *ngIf="item.featuredItem == 1">
+                  Featured
+                </div>
+              </div>
+            </div>
+          </ion-card-header>
+
+          <!-- Compact item information displayed inside each featured item card. -->
+          <ion-card-content>
+            <div class="item-info-grid">
+              <div class="info-box">
+                <span class="info-label">ID</span>
+                <strong>{{ item.id || 'N/A' }}</strong>
+              </div>
+
+              <div class="info-box">
+                <span class="info-label">Supplier</span>
+                <strong>{{ item.supplierName || 'N/A' }}</strong>
+              </div>
+
+              <div class="info-box">
+                <span class="info-label">Price</span>
+                <strong>$ {{ item.price | number:'1.0-0' }}</strong>
+              </div>
+
+              <div class="info-box">
+                <span class="info-label">Quantity</span>
+                <strong>{{ item.quantity | number:'1.0-0' }}</strong>
+              </div>
+            </div>
+
+            <!-- Optional note area for the featured item card. -->
+            <div class="note-box">
+              <div class="note-label">Note</div>
+              <div class="note-text">
+                {{ item.specialNote && item.specialNote.trim() ? item.specialNote : 'None' }}
+              </div>
+            </div>
+          </ion-card-content>
+        </ion-card>
+      </div>
+
+      <!-- Empty state shown when there are no featured items. -->
+      <ion-card class="empty-card" *ngIf="!loadingFeaturedItems && featuredItems.length === 0">
+        <ion-card-content>
+          <ion-icon name="star-outline"></ion-icon>
+          <h2>No featured items</h2>
+          <p>Featured inventory records will appear here.</p>
+        </ion-card-content>
+      </ion-card>
+    </section>
+
+  </div>
+
+  <!-- Loading overlay while featured items are being fetched. -->
+  <ion-loading [isOpen]="loadingFeaturedItems" message="Loading featured items..." cssClass="inventory-glass-loading">
+  </ion-loading>
+</ion-content>
+
+<!-- Add Item Form -->
+<div class="add-form-overlay" *ngIf="isAddFormVisible" [class.open]="isAddFormOverlayOpen"
+  [class.closing]="isAddFormClosing" (click)="closeAddForm()">
+
+  <!-- Animated cover used for the add form opening transition. -->
+  <div class="add-form-cover" [class.open]="isAddFormCoverOpen" [class.closing]="isAddFormClosing"
+    [ngStyle]="addFormCoverStyle">
+  </div>
+
+  <!-- Main add form panel. -->
+  <section class="add-form-panel" [class.open]="isAddFormContentOpen" [class.closing]="isAddFormClosing"
+    [ngStyle]="addFormPanelStyle" (click)="$event.stopPropagation()">
+
+    <!-- Close button for the add item form. -->
+    <ion-button class="add-form-close-button" fill="clear" aria-label="Close Add Item form" (click)="closeAddForm()">
+      <ion-icon name="close-outline"></ion-icon>
+    </ion-button>
+
+    <div class="add-form-content">
+      <div class="add-form-topbar">
+        <div class="add-form-heading">
+          <p class="add-form-eyebrow">Enter Item Details</p>
+        </div>
+      </div>
+
+      <!-- Form fields for creating a new inventory record. -->
+      <div class="detail-form">
+
+        <!-- Required item name input field. -->
+        <div class="detail-field">
+          <label class="detail-field-label">
+            Item Name <span class="detail-required-mark">*</span>
+          </label>
+
+          <div class="detail-value-box add-input-value-box">
+            <input class="add-native-control" type="text" [(ngModel)]="addItemForm.itemName"
+              placeholder="Enter String" />
+          </div>
+        </div>
+
+        <!-- Item ID is auto-generated and cannot be edited by the user. -->
+        <div class="detail-field">
+          <label class="detail-field-label">
+            Item ID <span class="detail-required-mark">*</span>
+          </label>
+
+          <div class="detail-value-box add-input-value-box readonly-id-value-box">
+            <input class="add-native-control readonly-id-control" type="text" value="Auto-generated Integer" readonly />
+          </div>
+        </div>
+
+        <!-- Category enum dropdown field. -->
+        <div class="detail-field glass-select-field" [class.glass-select-field-open]="openSelectMenu === 'category'">
+          <label class="detail-field-label">
+            Category <span class="detail-required-mark">*</span>
+          </label>
+
+          <div class="detail-value-box add-input-value-box glass-select-value-box">
+            <button class="glass-select-control" type="button" (click)="toggleSelectMenu('category')">
+              <span [class.placeholder-text]="!addItemForm.category">
+                {{ addItemForm.category || 'Select Category' }}
+              </span>
+              <ion-icon name="chevron-down-outline"></ion-icon>
+            </button>
+
+            <div class="glass-select-menu" *ngIf="openSelectMenu === 'category'">
+              <button class="glass-select-option empty-select-option" type="button" (click)="selectCategory('')">
+                Enter Category Enum
+              </button>
+
+              <button class="glass-select-option" type="button" *ngFor="let category of categories"
+                (click)="selectCategory(category)">
+                {{ category }}
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Featured status enum dropdown field. -->
+        <div class="detail-field glass-select-field"
+          [class.glass-select-field-open]="openSelectMenu === 'featuredItem'">
+          <label class="detail-field-label">
+            Featured <span class="detail-required-mark">*</span>
+          </label>
+
+          <div class="detail-value-box add-input-value-box glass-select-value-box">
+            <button class="glass-select-control" type="button" (click)="toggleSelectMenu('featuredItem')">
+              <span [class.placeholder-text]="addItemForm.featuredItem === ''">
+                {{ getFeaturedItemDisplayText() }}
+              </span>
+              <ion-icon name="chevron-down-outline"></ion-icon>
+            </button>
+
+            <div class="glass-select-menu" *ngIf="openSelectMenu === 'featuredItem'">
+              <button class="glass-select-option empty-select-option" type="button" (click)="selectFeaturedItem('')">
+                Select Status
+              </button>
+
+              <button class="glass-select-option" type="button" (click)="selectFeaturedItem(0)">
+                Not Featured
+              </button>
+
+              <button class="glass-select-option" type="button" (click)="selectFeaturedItem(1)">
+                Featured
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Required supplier name input field. -->
+        <div class="detail-field">
+          <label class="detail-field-label">
+            Supplier <span class="detail-required-mark">*</span>
+          </label>
+
+          <div class="detail-value-box add-input-value-box">
+            <input class="add-native-control" type="text" [(ngModel)]="addItemForm.supplierName"
+              placeholder="Enter String" />
+          </div>
+        </div>
+
+        <!-- Required integer price input field. -->
+        <div class="detail-field">
+          <label class="detail-field-label">
+            Price <span class="detail-required-mark">*</span>
+          </label>
+
+          <div class="detail-value-box add-input-value-box">
+            <input class="add-native-control" type="number" inputmode="numeric" min="0" [(ngModel)]="addItemForm.price"
+              placeholder="Enter Integer" />
+          </div>
+        </div>
+
+        <!-- Required integer quantity input field. -->
+        <div class="detail-field">
+          <label class="detail-field-label">
+            Quantity <span class="detail-required-mark">*</span>
+          </label>
+
+          <div class="detail-value-box add-input-value-box">
+            <input class="add-native-control" type="number" inputmode="numeric" min="0"
+              [(ngModel)]="addItemForm.quantity" placeholder="Enter Integer" />
+          </div>
+        </div>
+
+        <!-- Stock status enum dropdown field. -->
+        <div class="detail-field glass-select-field" [class.glass-select-field-open]="openSelectMenu === 'stockStatus'">
+          <label class="detail-field-label">
+            Stock Status <span class="detail-required-mark">*</span>
+          </label>
+
+          <div class="detail-value-box add-input-value-box glass-select-value-box">
+            <button class="glass-select-control" type="button" (click)="toggleSelectMenu('stockStatus')">
+              <span [class.placeholder-text]="!addItemForm.stockStatus">
+                {{ addItemForm.stockStatus || 'Select Stock Status' }}
+              </span>
+              <ion-icon name="chevron-down-outline"></ion-icon>
+            </button>
+
+            <div class="glass-select-menu" *ngIf="openSelectMenu === 'stockStatus'">
+              <button class="glass-select-option empty-select-option" type="button" (click)="selectStockStatus('')">
+                Enter Stock Status Enum
+              </button>
+
+              <button class="glass-select-option" type="button" *ngFor="let status of stockStatuses"
+                (click)="selectStockStatus(status)">
+                {{ status }}
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Optional special note field. -->
+        <div class="detail-field">
+          <label class="detail-field-label">
+            Note
+          </label>
+
+          <div class="detail-value-box detail-value-box-note">
+            <textarea class="add-native-control add-native-textarea" [(ngModel)]="addItemForm.specialNote"
+              placeholder="Enter String">
+            </textarea>
+          </div>
+        </div>
+
+        <!-- Form action buttons for clearing or submitting the add form. -->
+        <div class="add-form-actions">
+          <ion-button class="add-action-button clear-action-button" fill="clear" (click)="clearAddForm()">
+            Clear
+          </ion-button>
+
+          <ion-button class="add-action-button submit-action-button" fill="clear" [disabled]="addingItem"
+            (click)="addItem()">
+            Add
+          </ion-button>
+        </div>
+
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- Featured Item Detail -->
+<div class="item-detail-overlay" *ngIf="isItemDetailVisible" [class.open]="isItemDetailOverlayOpen"
+  [class.closing]="isItemDetailClosing" (click)="closeItemDetail()">
+
+  <!-- Animated cover layer for the featured item detail transition. -->
+  <div class="item-detail-cover" [class.open]="isItemDetailCoverOpen" [class.closing]="isItemDetailClosing"
+    [ngStyle]="itemDetailCoverStyle">
+  </div>
+
+  <!-- Expanded detail panel for a selected featured item. -->
+  <section class="item-detail-panel" [class.open]="isItemDetailContentOpen" [class.closing]="isItemDetailClosing"
+    [ngStyle]="itemDetailPanelStyle" (click)="$event.stopPropagation()">
+
+    <!-- Close button for the featured item detail panel. -->
+    <ion-button class="detail-close-button" fill="clear" aria-label="Close item detail" (click)="closeItemDetail()">
+      <ion-icon name="close-outline"></ion-icon>
+    </ion-button>
+
+    <div class="item-detail-content">
+      <div class="item-detail-topbar">
+        <div class="item-detail-heading">
+          <p class="item-detail-eyebrow">Item Details</p>
+        </div>
+      </div>
+
+      <!-- Detail rows are rendered from the selected featured item data. -->
+      <div class="detail-form">
+        <div class="detail-field" *ngFor="let row of selectedItemDetailRows">
+          <label class="detail-field-label">
+            {{ row.label }}
+          </label>
+
+          <div class="detail-value-box" [class.detail-value-box-note]="row.multiline">
+            {{ row.value }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>

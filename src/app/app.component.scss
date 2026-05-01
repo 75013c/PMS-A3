@@ -1,0 +1,535 @@
+/* Root app styles can be added here if needed. */
+
+/* Global CSS variables used by glass components across the app. */
+:host {
+  --glass-white: rgba(255, 255, 255, 0.25);
+  --glass-white-strong: rgba(255, 255, 255, 0.40);
+  --glass-white-soft: rgba(255, 255, 255, 0.15);
+
+  --glass-border: rgba(255, 255, 255, 0.70);
+  --glass-shadow:
+    0 8px 12px rgba(31, 41, 55, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.35);
+  --glass-card-radius: 12px;
+  --glass-inner-radius: 10px;
+  --glass-icon-radius: 9px;
+  --glass-border-width: 1px;
+
+  --app-glass-white-strong: rgba(255, 255, 255, 0.65);
+  --app-glass-border: rgba(255, 255, 255, 0.80);
+  --app-glass-shadow:
+    0 8px 12px rgba(31, 41, 55, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.35);
+  --app-glass-card-radius: 12px;
+}
+
+/* Toast */
+
+/* Global glass style for toast notifications. */
+:host ::ng-deep ion-toast.inventory-glass-toast {
+  --width: auto;
+  --min-width: 260px;
+  --max-width: calc(100vw - 56px);
+  --background: var(--app-glass-white-strong);
+  --color: #000000;
+  --box-shadow: var(--app-glass-shadow);
+  text-align: center;
+}
+
+/* Toast container glass background and border. */
+:host ::ng-deep ion-toast.inventory-glass-toast::part(container) {
+  border: 1px solid var(--app-glass-border);
+  border-radius: var(--app-glass-card-radius);
+  background: var(--app-glass-white-strong);
+  box-shadow: var(--app-glass-shadow);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+/* Toast message typography. */
+:host ::ng-deep ion-toast.inventory-glass-toast::part(message) {
+  padding: 14px 18px;
+  font-size: 20px;
+  font-weight: 400;
+  line-height: 1.35;
+  text-align: center;
+}
+
+/* Loading */
+
+/* Global glass style for Ionic loading overlays. */
+:host ::ng-deep ion-loading.inventory-glass-loading {
+  --width: auto;
+  --min-width: 280px;
+  --max-width: calc(100vw - 56px);
+  --background: transparent;
+  --spinner-color: #000000;
+  --box-shadow: none;
+  --backdrop-opacity: 0.08;
+
+  color: #000000;
+}
+
+/* Loading dialog wrapper with glass effect. */
+:host ::ng-deep ion-loading.inventory-glass-loading .loading-wrapper {
+  min-width: 280px;
+  max-width: calc(100vw - 56px);
+  min-height: 96px;
+
+  padding: 22px 28px;
+
+  border: 1px solid var(--app-glass-border) !important;
+  border-radius: var(--app-glass-card-radius) !important;
+  overflow: hidden !important;
+
+  background: var(--app-glass-white-strong) !important;
+  box-shadow: var(--app-glass-shadow) !important;
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+
+  color: #000000;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Loading text style. */
+:host ::ng-deep ion-loading.inventory-glass-loading .loading-content {
+  margin: 0;
+
+  color: #000000;
+  font-size: 24px;
+  font-weight: 400;
+  line-height: 1.35;
+  text-align: center;
+}
+
+/* Loading spinner color. */
+:host ::ng-deep ion-loading.inventory-glass-loading .loading-spinner {
+  color: #000000;
+}
+
+/* Loading spinner size and color. */
+:host ::ng-deep ion-loading.inventory-glass-loading ion-spinner {
+  width: 34px;
+  height: 34px;
+  color: #000000;
+}
+
+/* Shared aurora glass background for pages */
+
+/* Shared page background style for all glass pages. */
+:host ::ng-deep ion-content.glass-page {
+  --background: #ffffff !important;
+  position: relative;
+}
+
+/* Forces the Ionic content background to stay white. */
+:host ::ng-deep ion-content.glass-page::part(background) {
+  background: #ffffff !important;
+}
+
+/* Keeps page content above the animated background layer. */
+:host ::ng-deep ion-content.glass-page .page-container {
+  position: relative;
+  z-index: 1;
+}
+
+/* Animated aurora background layer used behind page content. */
+:host ::ng-deep ion-content.glass-page .aurora-background {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+  background-color: #ffffff;
+  background-image:
+    radial-gradient(circle,
+      rgba(174, 172, 246, 0.7) 0%,
+      rgba(187, 186, 245, 0.5) 36%,
+      rgba(151, 149, 240, 0) 66%),
+    radial-gradient(circle,
+      rgba(251, 200, 212, 0.7) 0%,
+      rgba(251, 200, 212, 0.5) 36%,
+      rgba(251, 200, 212, 0) 66%),
+    radial-gradient(circle,
+      rgba(151, 217, 225, 0.9) 0%,
+      rgba(151, 217, 225, 0.7) 36%,
+      rgba(151, 217, 225, 0) 66%),
+    radial-gradient(circle,
+      rgba(153, 201, 156, 0.9) 0%,
+      rgba(153, 201, 156, 0.7) 36%,
+      rgba(153, 201, 156, 0) 66%),
+    linear-gradient(135deg,
+      #9795f0 0%,
+      #fbc8d4 32%,
+      #97d9e1 66%,
+      #99c99c 100%);
+
+  background-size:
+    48vmax 48vmax,
+    48vmax 48vmax,
+    52vmax 52vmax,
+    52vmax 52vmax,
+    100% 100%;
+
+  background-position:
+    -22% -14%,
+    118% -10%,
+    -16% 116%,
+    116% 114%,
+    center;
+
+  background-repeat: no-repeat;
+  animation: auroraBackgroundMovement 24s ease-in-out infinite;
+  will-change: background-position;
+}
+
+/* Soft white overlay that makes the aurora background more subtle. */
+:host ::ng-deep ion-content.glass-page .aurora-background::after {
+  content: "";
+  position: absolute;
+  inset: -2%;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  background: rgba(255, 255, 255, 0.7);
+}
+
+/* Keyframes for the moving aurora background. */
+@keyframes auroraBackgroundMovement {
+  0% {
+    background-position:
+      -22% -14%,
+      118% -10%,
+      -16% 116%,
+      116% 114%,
+      center;
+  }
+
+  12.5% {
+    background-position:
+      112% -14%,
+      24% 18%,
+      -20% 78%,
+      86% 104%,
+      center;
+  }
+
+  25% {
+    background-position:
+      122% 58%,
+      -16% 110%,
+      48% 18%,
+      90% 72%,
+      center;
+  }
+
+  37.5% {
+    background-position:
+      78% 118%,
+      20% 92%,
+      112% 18%,
+      46% 36%,
+      center;
+  }
+
+  50% {
+    background-position:
+      -20% 96%,
+      112% 104%,
+      70% 28%,
+      8% 18%,
+      center;
+  }
+
+  62.5% {
+    background-position:
+      -24% 42%,
+      74% 20%,
+      112% 84%,
+      34% 72%,
+      center;
+  }
+
+  75% {
+    background-position:
+      52% 10%,
+      50% 58%,
+      8% 102%,
+      112% 28%,
+      center;
+  }
+
+  87.5% {
+    background-position:
+      108% 16%,
+      -14% 44%,
+      54% 94%,
+      88% 52%,
+      center;
+  }
+
+  100% {
+    background-position:
+      -22% -14%,
+      118% -10%,
+      -16% 116%,
+      116% 114%,
+      center;
+  }
+}
+
+/* Shared opaque milky top header */
+
+/* Global top header background and shadow reset. */
+:host ::ng-deep ion-header.app-top-header {
+  box-shadow: none;
+  background: #fffdf9 !important;
+}
+
+/* Removes Ionic's default header divider line. */
+:host ::ng-deep ion-header.app-top-header::after {
+  display: none;
+}
+
+/* Shared top toolbar style for all main pages. */
+:host ::ng-deep ion-header.app-top-header ion-toolbar.app-top-toolbar {
+  --min-height: 68px;
+  --background: #fffdf9 !important;
+  --color: #111827;
+  --border-width: 0;
+  --padding-start: 14px;
+  --padding-end: 14px;
+
+  position: relative;
+
+  background: #fffdf9 !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.95);
+  box-shadow:
+    0 6px 18px rgba(31, 41, 55, 0.08),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.75);
+}
+
+/* Forces the toolbar background part to match the custom header colour. */
+:host ::ng-deep ion-header.app-top-header ion-toolbar.app-top-toolbar::part(background) {
+  background: #fffdf9 !important;
+}
+
+/* Keeps the toolbar container transparent so the custom background is visible. */
+:host ::ng-deep ion-header.app-top-header ion-toolbar.app-top-toolbar::part(container) {
+  background: transparent !important;
+}
+
+/* Centers the page title inside the shared top toolbar. */
+:host ::ng-deep ion-header.app-top-header ion-title {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  transform: translateX(-50%);
+
+  width: max-content;
+  max-width: calc(100% - 120px);
+  padding: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: #1b1b1b;
+  font-size: 24px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  text-align: center;
+}
+
+/* Keeps the right-side toolbar buttons above the centered title layer. */
+:host ::ng-deep ion-header.app-top-header ion-buttons[slot="end"] {
+  position: relative;
+  z-index: 2;
+  margin-right: 2px;
+}
+
+/* Shared circular toolbar button style. */
+:host ::ng-deep ion-header.app-top-header ion-button {
+  width: 42px;
+  height: 42px;
+  margin: 0;
+
+  --padding-start: 0;
+  --padding-end: 0;
+  --padding-top: 0;
+  --padding-bottom: 0;
+
+  --border-radius: 999px;
+  --background: rgba(255, 255, 255, 0.55);
+  --background-hover: rgba(255, 255, 255, 0.68);
+  --background-activated: rgba(255, 255, 255, 0.78);
+  --box-shadow: none;
+  --color: #111827;
+}
+
+/* Native button part for circular glass toolbar buttons. */
+:host ::ng-deep ion-header.app-top-header ion-button::part(native) {
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  background: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* Shared top header icon style. */
+:host ::ng-deep ion-header.app-top-header ion-icon {
+  font-size: 35px;
+  color: #000000;
+}
+
+/* Shared help widget button and liquid-glass help alert */
+
+/* Fixed size for the help widget button. */
+:host ::ng-deep ion-header.app-top-header ion-button.help-widget-button {
+  width: 42px;
+  height: 42px;
+  min-width: 42px;
+  min-height: 42px;
+  margin: 0;
+}
+
+/* Global backdrop setting for the help alert. */
+:host ::ng-deep ion-alert.inventory-glass-help-alert {
+  --backdrop-opacity: 0.14;
+}
+
+/* Glass alert wrapper for all help popups. */
+:host ::ng-deep ion-alert.inventory-glass-help-alert .alert-wrapper {
+  width: min(90vw, 380px);
+  max-width: 380px;
+
+  border-radius: var(--glass-card-radius);
+  border: var(--glass-border-width) solid var(--glass-border);
+  background: var(--app-glass-white-strong);
+  box-shadow: var(--app-glass-shadow);
+
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+
+  overflow: hidden;
+}
+
+/* Padding for the help alert header area. */
+:host ::ng-deep ion-alert.inventory-glass-help-alert .alert-head {
+  padding: 22px 22px 8px 22px;
+}
+
+/* Help alert title typography. */
+:host ::ng-deep ion-alert.inventory-glass-help-alert .alert-title {
+  margin: 0;
+  color: #1b1b1b;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.2;
+  text-align: center;
+}
+
+/* Help alert message typography and spacing. */
+:host ::ng-deep ion-alert.inventory-glass-help-alert .alert-message {
+  padding: 10px 22px;
+  color: #333333;
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 1.45;
+  text-align: left;
+  white-space: pre-line;
+}
+
+/* Removes default paragraph margin inside custom help alert content. */
+:host ::ng-deep ion-alert.inventory-glass-help-alert .help-alert-body p {
+  margin: 0;
+}
+
+/* Adds spacing between help alert paragraphs. */
+:host ::ng-deep ion-alert.inventory-glass-help-alert .help-alert-body p + p {
+  margin-top: 10px;
+}
+
+/* Emphasises key operation names in help text. */
+:host ::ng-deep ion-alert.inventory-glass-help-alert .help-alert-body strong {
+  color: #111827;
+  font-weight: 800;
+}
+
+/* Centers the help alert OK button group. */
+:host ::ng-deep ion-alert.inventory-glass-help-alert .alert-button-group {
+  justify-content: center;
+  padding: 14px 22px 20px 22px;
+}
+
+/* Shared OK button style for help alerts. */
+:host ::ng-deep ion-alert.inventory-glass-help-alert .alert-button {
+  min-width: 120px;
+  min-height: 35px;
+  margin: 0;
+
+  border-radius: var(--glass-inner-radius);
+  border: var(--glass-border-width) solid var(--glass-border);
+  background: var(--glass-white-strong);
+  box-shadow: var(--glass-shadow);
+
+  color: #111827;
+  font-size: 24px;
+  font-weight: 800;
+  text-transform: none;
+}
+
+/* Centers the text inside the help alert button. */
+:host ::ng-deep ion-alert.inventory-glass-help-alert .alert-button .alert-button-inner {
+  justify-content: center;
+}
+
+/* Responsive help alert adjustments for narrow screens. */
+@media (max-width: 360px) {
+  /* Makes the help alert fit smaller screens. */
+  :host ::ng-deep ion-alert.inventory-glass-help-alert .alert-wrapper {
+    width: min(92vw, 332px);
+  }
+
+  /* Reduces help alert title size on narrow screens. */
+  :host ::ng-deep ion-alert.inventory-glass-help-alert .alert-title {
+    font-size: 20px;
+  }
+
+  /* Reduces help alert message spacing and font size on narrow screens. */
+  :host ::ng-deep ion-alert.inventory-glass-help-alert .alert-message {
+    padding: 8px 18px 2px 18px;
+    font-size: 14px;
+  }
+
+  /* Reduces help alert button size on narrow screens. */
+  :host ::ng-deep ion-alert.inventory-glass-help-alert .alert-button {
+    min-height: 40px;
+    font-size: 14px;
+  }
+}
+
+/* Help button background matches top toolbar */
+
+/* Makes the help button background transparent to match the toolbar. */
+:host ::ng-deep ion-header.app-top-header ion-button.help-widget-button {
+  --background: transparent;
+  --background-hover: transparent;
+  --background-activated: transparent;
+  --box-shadow: none;
+}
+
+/* Removes native background and shadow from the help button. */
+:host ::ng-deep ion-header.app-top-header ion-button.help-widget-button::part(native) {
+  background: transparent;
+  box-shadow: none;
+}
+
+/* Strong text style inside the help alert message. */
+:host ::ng-deep ion-alert.inventory-glass-help-alert .alert-message strong {
+  font-weight: 800;
+  color: #111827;
+}

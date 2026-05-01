@@ -1,0 +1,553 @@
+<!-- Top header for the Manage Item page. -->
+<ion-header class="app-top-header">
+  <ion-toolbar class="app-top-toolbar">
+    <ion-title>Manage Item</ion-title>
+
+    <!-- Help button opens the usage guide for this page. -->
+    <ion-buttons slot="end">
+      <ion-button class="help-widget-button" fill="clear"
+        style="font-size: 38px; width: 46px; height: 46px; --padding-start: 0; --padding-end: 0; --padding-top: 0; --padding-bottom: 0;"
+        aria-label="Open page help" (click)="showHelp()">
+        <ion-icon name="help-circle-outline" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<!-- Main content area for editing and deleting inventory items. -->
+<ion-content [fullscreen]="true" class="glass-page">
+  <div class="aurora-background" aria-hidden="true"></div>
+
+  <div class="page-container">
+
+    <!-- TOP AREA -->
+    <!-- Edit item section. It changes into delete search results when delete search is active. -->
+    <section class="manage-flip-section" [class.result-only-section]="hasDeleteSearchResults">
+
+      <!-- Normal Edit Item flip box shown when delete results are not displayed in this area. -->
+      <ng-container *ngIf="!hasDeleteSearchResults; else deleteResultsInTopArea">
+        <div class="manage-section-heading">
+          <h2 class="manage-section-title">Edit Item</h2>
+          <p class="manage-section-description">
+            <span>1. Search Item by Name</span>
+            <span>2. Select Item from Result</span>
+            <span>3. Enter Updated Information</span>
+          </p>
+        </div>
+
+        <!-- Flip card for opening the edit search input. -->
+        <div class="flip-stage" [class.flipped]="isAddBoxFlipped">
+          <div class="flip-card">
+
+            <!-- Front side of the edit flip card. -->
+            <div class="flip-face flip-front" role="button" tabindex="0" aria-label="Open Edit Item search"
+              (click)="showAddBack()">
+              <div class="flip-main-label">
+                Click To Edit Item
+              </div>
+            </div>
+
+            <!-- Back side of the edit flip card containing the search form. -->
+            <div class="flip-face flip-back">
+              <ion-button class="flip-back-button" fill="clear" aria-label="Back to Edit Item front"
+                (click)="showAddFront()">
+                <ion-icon name="arrow-back-outline" slot="icon-only"></ion-icon>
+              </ion-button>
+
+              <!-- Search area for finding the item to edit by exact name. -->
+              <div class="flip-back-content">
+                <div class="manage-search-stack">
+                  <div class="manage-search-row">
+                    <div class="manage-search-box">
+                      <input class="manage-search-input" type="text" [(ngModel)]="addSearchName" placeholder=" "
+                        aria-label="Search item name" (keyup.enter)="searchEditItem()" />
+
+                      <span class="manage-search-placeholder" aria-hidden="true">
+                        Search Item by Name
+                      </span>
+                    </div>
+
+                    <ion-button class="manage-search-button" fill="clear" aria-label="Search edit item"
+                      [disabled]="loadingEditSearch" (click)="searchEditItem()">
+                      <ion-icon name="search-outline"></ion-icon>
+                    </ion-button>
+                  </div>
+
+                  <!-- Clears edit search results and returns the edit box to normal state. -->
+                  <ion-button class="clear-search-under-button" fill="clear"
+                    *ngIf="hasEditSearchResults || loadingEditSearch" (click)="clearEditSearchResults()">
+                    Clear
+                  </ion-button>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </ng-container>
+
+      <!-- Delete search results are displayed in the top area when the lower delete box is used. -->
+      <ng-template #deleteResultsInTopArea>
+        <div class="cross-result-area delete-result-area">
+          <div class="cross-result-heading">
+            Search Result
+          </div>
+
+          <!-- Loading state while searching for an item to delete. -->
+          <div class="result-loading-box" *ngIf="loadingDeleteSearch">
+            <ion-spinner name="crescent"></ion-spinner>
+            <p>Searching...</p>
+          </div>
+
+          <!-- Delete search result list. Usually zero or one result is expected. -->
+          <div class="result-scroll" [class.single-result-scroll]="deleteSearchResults.length === 1"
+            *ngIf="!loadingDeleteSearch && deleteSearchResults.length > 0">
+            <ion-card class="item-card result-select-card" *ngFor="let item of deleteSearchResults"
+              [class.item-card-detail-source]="selectedManageMode === 'delete' && selectedManageItem === item"
+              [class.item-card-detail-source-hidden]="isManageDetailSourceHidden && selectedManageMode === 'delete' && selectedManageItem === item"
+              (click)="openDeleteItemForm(item, $event)">
+
+              <ng-container *ngTemplateOutlet="itemSummaryCard; context: { item: item }">
+              </ng-container>
+            </ion-card>
+          </div>
+
+          <!-- Empty state for delete search results. -->
+          <ion-card class="empty-card" *ngIf="!loadingDeleteSearch && deleteSearchResults.length === 0">
+            <ion-card-content>
+              <ion-icon name="cube-outline"></ion-icon>
+              <h2>No items found</h2>
+              <p>Try another exact item name.</p>
+            </ion-card-content>
+          </ion-card>
+        </div>
+      </ng-template>
+    </section>
+
+    <!-- BOTTOM AREA -->
+    <!-- Delete item section. It changes into edit search results when edit search is active. -->
+    <section class="manage-flip-section" [class.result-only-section]="hasEditSearchResults">
+
+      <!-- Normal Delete Item flip box shown when edit results are not displayed in this area. -->
+      <ng-container *ngIf="!hasEditSearchResults; else editResultsInBottomArea">
+        <div class="manage-section-heading">
+          <h2 class="manage-section-title">Delete Item</h2>
+          <p class="manage-section-description">
+            <span>1. Search Item by Name</span>
+            <span>2. Select Item from Result</span>
+            <span>3. Confirm the Deletion</span>
+          </p>
+        </div>
+
+        <!-- Flip card for opening the delete search input. -->
+        <div class="flip-stage" [class.flipped]="isDeleteBoxFlipped">
+          <div class="flip-card">
+
+            <!-- Front side of the delete flip card. -->
+            <div class="flip-face flip-front" role="button" tabindex="0" aria-label="Open Delete Item search"
+              (click)="showDeleteBack()">
+              <div class="flip-main-label">
+                Click To Delete Item
+              </div>
+            </div>
+
+            <!-- Back side of the delete flip card containing the search form. -->
+            <div class="flip-face flip-back">
+              <ion-button class="flip-back-button" fill="clear" aria-label="Back to Delete Item front"
+                (click)="showDeleteFront()">
+                <ion-icon name="arrow-back-outline" slot="icon-only"></ion-icon>
+              </ion-button>
+
+              <!-- Search area for finding the item to delete by exact name. -->
+              <div class="flip-back-content">
+                <div class="manage-search-stack">
+                  <div class="manage-search-row">
+                    <div class="manage-search-box">
+                      <input class="manage-search-input" type="text" [(ngModel)]="deleteSearchName" placeholder=" "
+                        aria-label="Search item name" (keyup.enter)="searchDeleteItem()" />
+
+                      <span class="manage-search-placeholder" aria-hidden="true">
+                        Search Item by Name
+                      </span>
+                    </div>
+
+                    <ion-button class="manage-search-button" fill="clear" aria-label="Search delete item"
+                      [disabled]="loadingDeleteSearch" (click)="searchDeleteItem()">
+                      <ion-icon name="search-outline"></ion-icon>
+                    </ion-button>
+                  </div>
+
+                  <!-- Clears delete search results and returns the delete box to normal state. -->
+                  <ion-button class="clear-search-under-button" fill="clear"
+                    *ngIf="hasDeleteSearchResults || loadingDeleteSearch" (click)="clearDeleteSearchResults()">
+                    Clear
+                  </ion-button>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </ng-container>
+
+      <!-- Edit search results are displayed in the bottom area when the upper edit box is used. -->
+      <ng-template #editResultsInBottomArea>
+        <div class="cross-result-area edit-result-area">
+          <div class="cross-result-heading">
+            Search Result
+          </div>
+
+          <!-- Loading state while searching for an item to edit. -->
+          <div class="result-loading-box" *ngIf="loadingEditSearch">
+            <ion-spinner name="crescent"></ion-spinner>
+            <p>Searching...</p>
+          </div>
+
+          <!-- Edit search result list. Usually zero or one result is expected. -->
+          <div class="result-scroll" [class.single-result-scroll]="editSearchResults.length === 1"
+            *ngIf="!loadingEditSearch && editSearchResults.length > 0">
+            <ion-card class="item-card result-select-card" *ngFor="let item of editSearchResults"
+              [class.item-card-detail-source]="selectedManageMode === 'edit' && selectedManageItem === item"
+              [class.item-card-detail-source-hidden]="isManageDetailSourceHidden && selectedManageMode === 'edit' && selectedManageItem === item"
+              (click)="openEditItemForm(item, $event)">
+
+              <ng-container *ngTemplateOutlet="itemSummaryCard; context: { item: item }">
+              </ng-container>
+            </ion-card>
+          </div>
+
+          <!-- Empty state for edit search results. -->
+          <ion-card class="empty-card" *ngIf="!loadingEditSearch && editSearchResults.length === 0">
+            <ion-card-content>
+              <ion-icon name="cube-outline"></ion-icon>
+              <h2>No items found</h2>
+              <p>Try another exact item name.</p>
+            </ion-card-content>
+          </ion-card>
+        </div>
+      </ng-template>
+    </section>
+
+  </div>
+</ion-content>
+
+<!-- Reusable item summary card template for edit and delete search results. -->
+<ng-template #itemSummaryCard let-item="item">
+  <ion-card-header class="item-header" [class.header-in-stock]="(item.stockStatus || '').toLowerCase() === 'in stock'"
+    [class.header-low-stock]="(item.stockStatus || '').toLowerCase() === 'low stock'"
+    [class.header-out-of-stock]="(item.stockStatus || '').toLowerCase() === 'out of stock'">
+
+    <!-- Summary card header showing item name, category, stock status, and select hint. -->
+    <div class="item-title-row">
+      <div class="item-title-group">
+        <ion-card-title>{{ getItemDisplayName(item) }}</ion-card-title>
+        <ion-card-subtitle>
+          {{ item.category || 'Miscellaneous' }}
+        </ion-card-subtitle>
+      </div>
+
+      <div class="item-click-hint" aria-hidden="true">
+        <span>Select</span>
+        <ion-icon name="chevron-forward-outline"></ion-icon>
+      </div>
+
+      <div class="item-status-column">
+        <div class="status-text">
+          {{ item.stockStatus || 'Unknown' }}
+        </div>
+
+        <div class="featured-text" *ngIf="item.featuredItem == 1">
+          Featured
+        </div>
+      </div>
+    </div>
+  </ion-card-header>
+
+  <!-- Compact item information displayed inside each search result card. -->
+  <ion-card-content>
+    <div class="item-info-grid">
+      <div class="info-box">
+        <span class="info-label">ID</span>
+        <strong>{{ item.id || item.item_id || 'N/A' }}</strong>
+      </div>
+
+      <div class="info-box">
+        <span class="info-label">Supplier</span>
+        <strong>{{ item.supplierName || 'N/A' }}</strong>
+      </div>
+
+      <div class="info-box">
+        <span class="info-label">Price</span>
+        <strong>$ {{ item.price | number:'1.0-0' }}</strong>
+      </div>
+
+      <div class="info-box">
+        <span class="info-label">Quantity</span>
+        <strong>{{ item.quantity | number:'1.0-0' }}</strong>
+      </div>
+    </div>
+  </ion-card-content>
+</ng-template>
+
+<!-- Expanded Manage Form -->
+<!-- Overlay panel used for both edit form and delete confirmation detail view. -->
+<div class="manage-detail-overlay" *ngIf="isManageDetailVisible" [class.open]="isManageDetailOverlayOpen"
+  [class.closing]="isManageDetailClosing" (click)="closeManageDetail()">
+
+  <!-- Animated cover layer for opening and closing the manage detail panel. -->
+  <div class="manage-detail-cover" [class.open]="isManageDetailCoverOpen" [class.closing]="isManageDetailClosing"
+    [ngStyle]="manageDetailCoverStyle">
+  </div>
+
+  <!-- Main floating panel for edit or delete mode. -->
+  <section class="manage-detail-panel" [class.open]="isManageDetailContentOpen" [class.closing]="isManageDetailClosing"
+    [ngStyle]="manageDetailPanelStyle" (click)="$event.stopPropagation()">
+
+    <!-- Close button for the manage detail panel. -->
+    <ion-button class="manage-detail-close-button" fill="clear" aria-label="Close manage form"
+      (click)="closeManageDetail()">
+      <ion-icon name="close-outline" slot="icon-only"></ion-icon>
+    </ion-button>
+
+    <div class="manage-detail-content">
+
+      <!-- Dynamic title changes according to edit or delete mode. -->
+      <div class="manage-detail-topbar">
+        <div class="manage-detail-heading">
+          <p class="manage-detail-eyebrow">
+            {{ selectedManageMode === 'edit' ? 'Edit Item' : 'Delete Item' }}
+          </p>
+        </div>
+      </div>
+
+      <!-- Edit form is displayed only when the selected manage mode is edit. -->
+      <ng-container *ngIf="selectedManageMode === 'edit'">
+        <ng-container *ngIf="editForm as form">
+          <div class="manage-edit-form">
+            <!-- Editable item name field. -->
+            <div class="manage-form-field">
+              <label>Item Name <span>*</span></label>
+              <input class="manage-form-control" type="text" [(ngModel)]="form.itemName" placeholder="Enter String" />
+            </div>
+
+            <!-- Readonly item ID field. -->
+            <div class="manage-form-field">
+              <label>Item ID <span>*</span></label>
+              <input class="manage-form-control readonly-form-control" type="text"
+                [value]="selectedManageItem?.id || selectedManageItem?.item_id || 'Auto-generated Integer'" readonly />
+            </div>
+
+            <!-- Editable category enum dropdown. -->
+            <div class="manage-form-field glass-select-field"
+              [class.glass-select-field-open]="openManageSelectMenu === 'category'">
+              <label>Category <span>*</span></label>
+
+              <div class="manage-form-control glass-select-value-box">
+                <button class="glass-select-control" type="button" (click)="toggleManageSelectMenu('category')">
+                  <span [class.placeholder-text]="!form.category">
+                    {{ form.category || 'Select Category' }}
+                  </span>
+                  <ion-icon name="chevron-down-outline"></ion-icon>
+                </button>
+
+                <div class="glass-select-menu" *ngIf="openManageSelectMenu === 'category'">
+                  <button class="glass-select-option empty-select-option" type="button"
+                    (click)="selectEditCategory('')">
+                    Enter Category Enum
+                  </button>
+
+                  <button class="glass-select-option" type="button" *ngFor="let category of categories"
+                    (click)="selectEditCategory(category)">
+                    {{ category }}
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Editable featured status dropdown. -->
+            <div class="manage-form-field glass-select-field"
+              [class.glass-select-field-open]="openManageSelectMenu === 'featuredItem'">
+              <label>Featured <span>*</span></label>
+
+              <div class="manage-form-control glass-select-value-box">
+                <button class="glass-select-control" type="button" (click)="toggleManageSelectMenu('featuredItem')">
+                  <span [class.placeholder-text]="form.featuredItem === ''">
+                    {{ getEditFeaturedItemDisplayText() }}
+                  </span>
+                  <ion-icon name="chevron-down-outline"></ion-icon>
+                </button>
+
+                <div class="glass-select-menu" *ngIf="openManageSelectMenu === 'featuredItem'">
+                  <button class="glass-select-option empty-select-option" type="button"
+                    (click)="selectEditFeaturedItem('')">
+                    Select Status
+                  </button>
+
+                  <button class="glass-select-option" type="button" (click)="selectEditFeaturedItem(0)">
+                    Not Featured
+                  </button>
+
+                  <button class="glass-select-option" type="button" (click)="selectEditFeaturedItem(1)">
+                    Featured
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Editable supplier field. -->
+            <div class="manage-form-field">
+              <label>Supplier <span>*</span></label>
+              <input class="manage-form-control" type="text" [(ngModel)]="form.supplierName"
+                placeholder="Enter String" />
+            </div>
+
+            <!-- Editable price field. -->
+            <div class="manage-form-field">
+              <label>Price <span>*</span></label>
+              <input class="manage-form-control" type="number" inputmode="numeric" min="0" [(ngModel)]="form.price"
+                placeholder="Enter Integer" />
+            </div>
+
+            <!-- Editable quantity field. -->
+            <div class="manage-form-field">
+              <label>Quantity <span>*</span></label>
+              <input class="manage-form-control" type="number" inputmode="numeric" min="0" [(ngModel)]="form.quantity"
+                placeholder="Enter Integer" />
+            </div>
+
+            <!-- Editable stock status enum dropdown. -->
+            <div class="manage-form-field glass-select-field"
+              [class.glass-select-field-open]="openManageSelectMenu === 'stockStatus'">
+              <label>Stock Status <span>*</span></label>
+
+              <div class="manage-form-control glass-select-value-box">
+                <button class="glass-select-control" type="button" (click)="toggleManageSelectMenu('stockStatus')">
+                  <span [class.placeholder-text]="!form.stockStatus">
+                    {{ form.stockStatus || 'Select Stock Status' }}
+                  </span>
+                  <ion-icon name="chevron-down-outline"></ion-icon>
+                </button>
+
+                <div class="glass-select-menu" *ngIf="openManageSelectMenu === 'stockStatus'">
+                  <button class="glass-select-option empty-select-option" type="button"
+                    (click)="selectEditStockStatus('')">
+                    Enter Stock Status Enum
+                  </button>
+
+                  <button class="glass-select-option" type="button" *ngFor="let status of stockStatuses"
+                    (click)="selectEditStockStatus(status)">
+                    {{ status }}
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Optional note field for editing the item. -->
+            <div class="manage-form-field manage-form-field-full">
+              <label>Note</label>
+              <textarea class="manage-form-control manage-form-textarea" [(ngModel)]="form.specialNote"
+                placeholder="Enter String">
+              </textarea>
+            </div>
+          </div>
+
+          <!-- Edit form action buttons. -->
+          <div class="manage-form-actions">
+            <ion-button class="manage-form-button cancel-form-button" fill="clear" (click)="closeManageDetail()">
+              Clear
+            </ion-button>
+
+            <ion-button class="manage-form-button update-submit-button" fill="clear" [disabled]="updatingItem"
+              (click)="updateSelectedItem()">
+              Update
+            </ion-button>
+          </div>
+        </ng-container>
+      </ng-container>
+
+      <!-- Delete detail view is displayed only when the selected manage mode is delete. -->
+      <ng-container *ngIf="selectedManageMode === 'delete'">
+        <ng-container *ngIf="selectedManageItem as item">
+          <div class="delete-detail-form">
+            <!-- Readonly item information shown before deletion. -->
+            <div class="delete-detail-field">
+              <label>Item Name</label>
+              <div class="delete-detail-value-box">
+                {{ getItemDisplayName(item) }}
+              </div>
+            </div>
+
+            <div class="delete-detail-field">
+              <label>Item ID</label>
+              <div class="delete-detail-value-box">
+                {{ item.id || item.item_id || 'N/A' }}
+              </div>
+            </div>
+
+            <div class="delete-detail-field">
+              <label>Category</label>
+              <div class="delete-detail-value-box">
+                {{ item.category || 'Miscellaneous' }}
+              </div>
+            </div>
+
+            <div class="delete-detail-field">
+              <label>Featured</label>
+              <div class="delete-detail-value-box">
+                {{ getFeaturedDisplayText(item) }}
+              </div>
+            </div>
+
+            <div class="delete-detail-field">
+              <label>Supplier</label>
+              <div class="delete-detail-value-box">
+                {{ item.supplierName || 'N/A' }}
+              </div>
+            </div>
+
+            <div class="delete-detail-field">
+              <label>Price</label>
+              <div class="delete-detail-value-box">
+                $ {{ item.price | number:'1.0-0' }}
+              </div>
+            </div>
+
+            <div class="delete-detail-field">
+              <label>Quantity</label>
+              <div class="delete-detail-value-box">
+                {{ item.quantity | number:'1.0-0' }}
+              </div>
+            </div>
+
+            <div class="delete-detail-field">
+              <label>Stock Status</label>
+              <div class="delete-detail-value-box">
+                {{ item.stockStatus || 'Unknown' }}
+              </div>
+            </div>
+
+            <div class="delete-detail-field">
+              <label>Note</label>
+              <div class="delete-detail-value-box delete-detail-value-box-note">
+                {{ item.specialNote && item.specialNote.trim() ? item.specialNote : 'None' }}
+              </div>
+            </div>
+          </div>
+
+          <!-- Delete view action buttons. -->
+          <div class="manage-form-actions">
+            <ion-button class="manage-form-button cancel-form-button" fill="clear" (click)="closeManageDetail()">
+              Clear
+            </ion-button>
+
+            <ion-button class="manage-form-button delete-submit-button" fill="clear" [disabled]="deletingItem"
+              (click)="deleteSelectedItem()">
+              Delete
+            </ion-button>
+          </div>
+        </ng-container>
+      </ng-container>
+
+    </div>
+  </section>
+</div>

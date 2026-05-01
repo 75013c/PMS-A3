@@ -1,0 +1,2288 @@
+/* Main layout container for the manage item page. */
+.page-container {
+  position: relative;
+  z-index: 1;
+  height: 100%;
+  box-sizing: border-box;
+  padding: 14px;
+  padding-bottom: calc(100px + var(--ion-safe-area-bottom, 0px));
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 36px;
+  overflow: hidden;
+}
+
+/* Section container for the edit and delete flip cards. */
+.manage-flip-section {
+  min-height: 0;
+  flex: 0 0 calc((92% - 14px) / 2);
+
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: 12px;
+}
+
+/* Changes a flip section into a search-result-only area. */
+.manage-flip-section.result-only-section {
+  grid-template-rows: minmax(0, 1fr);
+}
+
+/* Centers the heading text above each manage section. */
+.manage-section-heading {
+  text-align: center;
+}
+
+/* Title style for the edit and delete sections. */
+.manage-section-title {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.15;
+  color: #1b1b1b;
+  text-align: center;
+  letter-spacing: 0.01em;
+}
+
+/* Instruction list shown under each manage section title. */
+.manage-section-description {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+
+  margin: 8px 0 0 0;
+  font-size: 18px;
+  line-height: 1.25;
+  color: #535353;
+  text-align: left;
+  transform: translateX(15px);
+}
+
+/* Section container for the edit and delete flip cards. */
+.manage-flip-section:first-of-type .manage-section-description {
+  transform: translateX(21px);
+}
+
+/* Instruction list shown under each manage section title. */
+.manage-section-description span {
+  display: block;
+}
+
+/* Perspective container for the 3D flip card animation. */
+.flip-stage {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  position: relative;
+  perspective: 800px;
+}
+
+/* Inner card that rotates between front and back faces. */
+.flip-card {
+  width: 100%;
+  height: 100%;
+  position: relative;
+
+  transform-style: preserve-3d;
+  transition: all 1.6s ease;
+}
+
+/* Perspective container for the 3D flip card animation. */
+.flip-stage.flipped .flip-card {
+  transform: rotateY(180deg);
+}
+
+/* Shared style for the front and back sides of the flip card. */
+.flip-face {
+  position: absolute;
+  inset: 0;
+
+  border-radius: var(--glass-card-radius);
+  border: var(--glass-border-width) solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+
+  overflow: hidden;
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+/* Section container for the edit and delete flip cards. */
+.manage-flip-section:nth-of-type(1) .flip-face {
+  background: rgba(225, 234, 255, 0.4);
+}
+
+/* Section container for the edit and delete flip cards. */
+.manage-flip-section:nth-of-type(2) .flip-face {
+  background: rgba(255, 238, 238, 0.4);
+}
+
+/* Shared style for the front and back sides of the flip card. */
+.flip-face::before {
+  content: none;
+}
+
+/* Front side of the flip card. */
+.flip-front {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+/* Front side of the flip card. */
+.flip-front:active {
+  transform: scale(0.995);
+}
+
+/* Back side of the flip card containing the search controls. */
+.flip-back {
+  transform: rotateY(180deg);
+}
+
+/* Large centered label displayed on the front of each flip card. */
+.flip-main-label {
+  position: relative;
+  z-index: 1;
+
+  color: #111827;
+  font-size: 28px;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: 0.01em;
+  text-align: center;
+
+  pointer-events: none;
+  user-select: none;
+}
+
+/* Back side of the flip card containing the search controls. */
+.flip-back-button {
+  position: absolute;
+  left: 12px;
+  top: 12px;
+  z-index: 2;
+
+  width: 42px;
+  height: 42px;
+  min-width: 42px;
+  min-height: 42px;
+  max-width: 42px;
+  max-height: 42px;
+  aspect-ratio: 1 / 1;
+  margin: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+  overflow: hidden;
+  clip-path: circle(50% at 50% 50%);
+
+  --padding-start: 0;
+  --padding-end: 0;
+  --padding-top: 0;
+  --padding-bottom: 0;
+
+  --border-radius: 50%;
+  --background: transparent;
+  --background-hover: transparent;
+  --background-activated: transparent;
+  --box-shadow: none;
+  --color: #111827;
+}
+
+/* Back side of the flip card containing the search controls. */
+.flip-back-button::part(native) {
+  width: 42px;
+  height: 42px;
+  min-width: 42px;
+  min-height: 42px;
+  max-width: 42px;
+  max-height: 42px;
+  aspect-ratio: 1 / 1;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+
+  padding: 0;
+  margin: 0;
+
+  border-radius: 50% !important;
+  overflow: hidden;
+  clip-path: circle(50% at 50% 50%);
+
+  border: var(--glass-border-width) solid var(--glass-border);
+  background: rgba(255, 255, 255, 0.46);
+  box-shadow:
+    0 6px 12px rgba(31, 41, 55, 0.10),
+    inset 0 1px 0 rgba(255, 255, 255, 0.42);
+
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* Back side of the flip card containing the search controls. */
+.flip-back-button ion-icon {
+  width: 22px;
+  height: 22px;
+  font-size: 22px;
+  line-height: 1;
+  color: #111827;
+}
+
+/* Back side of the flip card containing the search controls. */
+.flip-back-content {
+  position: relative;
+  z-index: 1;
+  height: 100%;
+  padding: 14px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Vertical stack for the search row and clear button. */
+.manage-search-stack {
+  position: relative;
+
+  width: 100%;
+  max-width: 360px;
+  height: 52px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Horizontal row containing the search input and search button. */
+.manage-search-row {
+  width: 100%;
+  max-width: 360px;
+  height: 52px;
+
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Glass search input container. */
+.manage-search-box {
+  position: relative;
+
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+
+  display: flex;
+  align-items: center;
+
+  border-radius: var(--glass-inner-radius);
+  border: var(--glass-border-width) solid rgba(255, 255, 255, 0.88);
+  background: rgba(255, 255, 255, 0.72);
+  box-shadow:
+    0 8px 12px rgba(31, 41, 55, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.45);
+
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+
+  overflow: hidden;
+}
+
+/* Native search input field. */
+.manage-search-input {
+  position: relative;
+  z-index: 2;
+
+  width: 100%;
+  height: 100%;
+
+  border: none;
+  outline: none;
+  background: transparent;
+
+  padding: 0 16px;
+
+  color: #111827;
+  font-size: 16px;
+  font-weight: 500;
+  text-align: left;
+}
+
+/* Native search input field. */
+.manage-search-input::placeholder {
+  color: transparent;
+  opacity: 0;
+}
+
+/* Floating placeholder label for the custom search input. */
+.manage-search-placeholder {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 1;
+
+  transform: translate(-50%, -50%);
+
+  color: #6b7280;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1;
+  white-space: nowrap;
+
+  pointer-events: none;
+  transition: opacity 140ms linear;
+}
+
+.manage-search-input:focus+.manage-search-placeholder,
+/* Native search input field. */
+.manage-search-input:not(:placeholder-shown)+.manage-search-placeholder {
+  opacity: 0;
+}
+
+/* Search icon button used by edit and delete search. */
+.manage-search-button {
+  width: 52px;
+  height: 52px;
+  min-width: 52px;
+  margin: 0;
+
+  --padding-start: 0;
+  --padding-end: 0;
+  --padding-top: 0;
+  --padding-bottom: 0;
+
+  --border-radius: var(--glass-inner-radius);
+  --background: rgba(255, 255, 255, 0.72);
+  --background-hover: rgba(255, 255, 255, 0.80);
+  --background-activated: rgba(255, 255, 255, 0.88);
+  --box-shadow: none;
+  --color: #111827;
+}
+
+/* Search icon button used by edit and delete search. */
+.manage-search-button::part(native) {
+  border-radius: var(--glass-inner-radius);
+  border: var(--glass-border-width) solid rgba(255, 255, 255, 0.88);
+  background: rgba(255, 255, 255, 0.72);
+  box-shadow:
+    0 8px 12px rgba(31, 41, 55, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.45);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+/* Search icon button used by edit and delete search. */
+.manage-search-button ion-icon {
+  font-size: 24px;
+  color: #111827;
+}
+
+/* Button that clears the current search results. */
+.clear-search-under-button {
+  position: absolute;
+  left: 50%;
+  top: calc(100% + 20px);
+  transform: translateX(-50%);
+
+  width: 120px;
+  height: 38px;
+  min-height: 38px;
+  margin: 0;
+
+  --border-radius: var(--glass-inner-radius);
+  --padding-start: 14px;
+  --padding-end: 14px;
+  --padding-top: 0;
+  --padding-bottom: 0;
+  --background: rgba(255, 255, 255, 0.58);
+  --background-hover: rgba(255, 255, 255, 0.66);
+  --background-activated: rgba(255, 255, 255, 0.74);
+  --box-shadow: none;
+  --color: #111827;
+
+  font-size: 16px;
+  font-weight: 400;
+  letter-spacing: 0.6px;
+  text-transform: none;
+}
+
+/* Button that clears the current search results. */
+.clear-search-under-button::part(native) {
+  height: 38px;
+  min-height: 38px;
+  border-radius: var(--glass-inner-radius);
+  border: var(--glass-border-width) solid var(--glass-border);
+  background: rgba(255, 255, 255, 0.58);
+  box-shadow: var(--glass-shadow);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+/* Area that displays search results in the opposite box position. */
+.cross-result-area {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  box-sizing: border-box;
+
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  border-radius: var(--glass-card-radius);
+  overflow: hidden;
+}
+
+/* Text heading above the search results. */
+.cross-result-heading {
+  flex: 0 0 auto;
+  width: 100%;
+  box-sizing: border-box;
+
+  margin: 0;
+  padding: 0;
+
+  color: #1b1b1b;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.15;
+  text-align: center;
+  letter-spacing: 0.01em;
+}
+
+/* Scrollable container for search result cards. */
+.result-scroll {
+  flex: 1 1 auto;
+  width: 100%;
+  height: auto;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 0;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Scrollable container for search result cards. */
+.result-scroll.single-result-scroll {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Scrollable container for search result cards. */
+.result-scroll.single-result-scroll .result-select-card {
+  width: 100%;
+}
+
+/* Loading state displayed while a search request is running. */
+.result-loading-box {
+  flex: 1 1 auto;
+  width: 100%;
+  height: auto;
+  min-height: 0;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+
+  border-radius: var(--glass-card-radius);
+  border: var(--glass-border-width) solid var(--glass-border);
+  background: var(--glass-white-strong);
+  box-shadow: var(--glass-shadow);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+/* Loading state displayed while a search request is running. */
+.result-loading-box ion-spinner {
+  width: 30px;
+  height: 30px;
+  color: #111827;
+}
+
+/* Loading state displayed while a search request is running. */
+.result-loading-box p {
+  margin: 0;
+  color: #6b7280;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+/* Search result item card style. */
+.item-card {
+  margin: 0;
+  border-radius: var(--glass-card-radius);
+  overflow: hidden;
+  --background: var(--glass-white) !important;
+  background: var(--glass-white) !important;
+  border: var(--glass-border-width) solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  transition:
+    opacity 220ms linear,
+    transform 220ms ease,
+    box-shadow 220ms ease,
+    border-color 220ms ease,
+    background 220ms ease;
+  will-change: transform, opacity;
+  cursor: pointer;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+}
+
+/* Search result item card style. */
+.item-card ion-card-header.item-header,
+.item-card ion-card-content {
+  transition:
+    opacity 130ms linear,
+    transform 130ms ease-in;
+  will-change: opacity, transform;
+}
+
+/* Selectable card state for search results. */
+.result-select-card:hover {
+  transform: translate3d(0, -4px, 0);
+  border-color: rgba(255, 255, 255, 0.86);
+}
+
+/* Search result item card style. */
+.item-card-detail-source {
+  pointer-events: none;
+}
+
+/* Search result item card style. */
+.item-card-detail-source-hidden ion-card-header.item-header,
+.item-card-detail-source-hidden ion-card-content {
+  opacity: 0;
+  transform: translate3d(0, -34px, 0);
+}
+
+/* Search result item card style. */
+.item-card ion-card-header.item-header {
+  padding: 12px 16px 0 16px;
+}
+
+/* Search result item card style. */
+.item-card ion-card-content {
+  padding: 12px 16px 16px 16px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* Scrollable container for search result cards. */
+.result-scroll .item-card+.item-card {
+  margin-top: 14px;
+}
+
+/* Scrollable container for search result cards. */
+.result-scroll.single-result-scroll .item-card+.item-card {
+  margin-top: 0;
+}
+
+/* Green header gradient for in-stock items. */
+.header-in-stock {
+  background: linear-gradient(to bottom,
+      rgba(151, 223, 175, 0.8) 0%,
+      rgba(173, 225, 195, 0.4) 50%,
+      rgba(255, 255, 255, 0.01) 100%);
+}
+
+/* Yellow header gradient for low-stock items. */
+.header-low-stock {
+  background: linear-gradient(to bottom,
+      rgba(240, 220, 141, 0.8) 0%,
+      rgba(234, 222, 175, 0.4) 50%,
+      rgba(255, 255, 255, 0.01) 100%);
+}
+
+/* Red header gradient for out-of-stock items. */
+.header-out-of-stock {
+  background: linear-gradient(to bottom,
+      rgba(237, 147, 147, 0.8) 0%,
+      rgba(240, 192, 192, 0.4) 50%,
+      rgba(255, 255, 255, 0.01) 100%);
+}
+
+/* Header layout for item name, select hint, and stock status. */
+.item-title-row {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+/* Item name and category column. */
+.item-title-group {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-width: 0;
+  flex: 1;
+  margin-left: 5px;
+}
+
+/* Item name and category column. */
+.item-title-group ion-card-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #111827;
+  margin: 0;
+  line-height: 1.15;
+}
+
+/* Item name and category column. */
+.item-title-group ion-card-subtitle {
+  margin-top: 12px;
+  font-size: 15px;
+  font-weight: 500;
+  color: #000000;
+  line-height: 1.2;
+}
+
+/* Centered select hint displayed on result cards. */
+.item-click-hint {
+  position: absolute;
+  left: 50%;
+  top: 30px;
+  transform: translateX(-50%);
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+
+  padding: 3px 6px 3px 16px;
+  border-radius: 999px;
+  border: var(--glass-border-width) solid var(--glass-border);
+  background: var(--glass-white-strong);
+  box-shadow: var(--glass-shadow);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* Centered select hint displayed on result cards. */
+.item-click-hint span {
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 1;
+  color: #636363;
+  white-space: nowrap;
+}
+
+/* Centered select hint displayed on result cards. */
+.item-click-hint ion-icon {
+  font-size: 16px;
+  color: #4b5563;
+}
+
+/* Right-side column for stock status and featured label. */
+.item-status-column {
+  flex-shrink: 0;
+  max-width: 128px;
+  margin-left: auto;
+  margin-right: 5px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+/* Stock status text style. */
+.status-text {
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.15;
+  color: #111827;
+  text-align: right;
+  white-space: normal;
+  max-width: 125px;
+  margin: 0;
+}
+
+/* Featured item label style. */
+.featured-text {
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.2;
+  color: #000000;
+  text-align: right;
+  white-space: nowrap;
+  margin-top: 12px;
+}
+
+/* Compact grid for ID, supplier, price, and quantity. */
+.item-info-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 0;
+  padding: 0;
+}
+
+/* Glass box used for each compact item attribute. */
+.info-box {
+  background: var(--glass-white);
+  border: var(--glass-border-width) solid var(--glass-border);
+  border-radius: var(--glass-inner-radius);
+  padding: 9px 10px;
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* Glass box used for each compact item attribute. */
+.info-box .info-label {
+  display: inline-block;
+  font-size: 15px;
+  font-weight: 600;
+  color: #313131;
+  margin: 0;
+  white-space: nowrap;
+}
+
+/* Glass box used for each compact item attribute. */
+.info-box strong {
+  font-size: 15px;
+  font-weight: 500;
+  color: #111827;
+  text-align: right;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Manage detail overlay: same expansion style as Tab1 item detail */
+
+/* Full-screen overlay behind the edit/delete detail panel. */
+.manage-detail-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  opacity: 0;
+  background: rgba(15, 23, 42, 0);
+  pointer-events: auto;
+  transition:
+    opacity 130ms linear,
+    background 130ms linear;
+}
+
+/* Full-screen overlay behind the edit/delete detail panel. */
+.manage-detail-overlay.open {
+  opacity: 1;
+  background: rgba(15, 23, 42, 0.10);
+}
+
+/* Full-screen overlay behind the edit/delete detail panel. */
+.manage-detail-overlay.closing {
+  opacity: 1;
+  background: rgba(15, 23, 42, 0.10);
+}
+
+/* Animated glass cover for the manage detail transition. */
+.manage-detail-cover {
+  position: fixed;
+  z-index: 1001;
+  overflow: hidden;
+  pointer-events: none;
+
+  background: var(--glass-white-soft);
+  border: var(--glass-border-width) solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+
+  transform-origin: 50% 50%;
+  transform: translate3d(0px, 0px, 0px);
+
+  transition:
+    left 250ms ease-in-out,
+    top 250ms ease-in-out,
+    width 250ms ease-in-out,
+    height 250ms ease-in-out,
+    border-radius 250ms ease-in-out,
+    background 250ms ease-in-out,
+    box-shadow 250ms ease-in-out,
+    backdrop-filter 250ms ease-in-out,
+    -webkit-backdrop-filter 250ms ease-in-out;
+
+  will-change: left, top, width, height;
+  backface-visibility: hidden;
+}
+
+/* Animated glass cover for the manage detail transition. */
+.manage-detail-cover.open {
+  border-radius: var(--glass-card-radius) !important;
+  background: var(--glass-white-soft);
+  box-shadow: var(--glass-shadow);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+/* Animated glass cover for the manage detail transition. */
+.manage-detail-cover.closing {
+  background: var(--glass-white-soft);
+  box-shadow: var(--glass-shadow);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+/* Floating panel for edit and delete item details. */
+.manage-detail-panel {
+  position: fixed;
+  z-index: 1002;
+  border-radius: var(--glass-card-radius);
+
+  opacity: 0;
+  pointer-events: none;
+  overflow: hidden;
+
+  transform: translate3d(0, 10px, 0);
+  transition:
+    opacity 130ms linear,
+    transform 130ms ease-out;
+  will-change: opacity, transform;
+}
+
+/* Floating panel for edit and delete item details. */
+.manage-detail-panel.open {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  pointer-events: auto;
+}
+
+/* Floating panel for edit and delete item details. */
+.manage-detail-panel.closing {
+  opacity: 0;
+  transform: translate3d(0, 10px, 0);
+  pointer-events: none;
+  transition:
+    opacity 130ms linear 0ms,
+    transform 130ms ease-out 0ms;
+}
+
+/* Scrollable content inside the manage detail panel. */
+.manage-detail-content {
+  height: 100%;
+  overflow-y: auto;
+  padding: 18px;
+  padding-top: calc(var(--ion-safe-area-top, 0px) + 18px);
+  padding-bottom: calc(var(--ion-safe-area-bottom, 0px) + 18px);
+  background: transparent;
+}
+
+/* Top heading area inside the manage detail panel. */
+.manage-detail-topbar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 18px;
+  min-height: 50px;
+  opacity: 0;
+  transform: translate3d(0, 14px, 0);
+  transition:
+    opacity 130ms linear,
+    transform 130ms ease-out;
+}
+
+/* Styles the .manage-detail-heading block. */
+.manage-detail-heading {
+  width: 100%;
+  text-align: center;
+}
+
+/* Floating panel for edit and delete item details. */
+.manage-detail-panel.open .manage-detail-topbar {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  transition-delay: 20ms;
+}
+
+/* Mode title shown in the manage detail panel. */
+.manage-detail-eyebrow {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: #5c5c5c;
+  text-align: center;
+}
+
+/* Circular close button for the manage detail panel. */
+.manage-detail-close-button {
+  position: absolute;
+  right: 18px;
+  top: 18px;
+  z-index: 5;
+  opacity: 0;
+  transform: translate3d(0, 14px, 0);
+  transition:
+    opacity 130ms linear,
+    transform 130ms ease-out;
+
+  width: 50px;
+  height: 50px;
+  min-width: 50px;
+  min-height: 50px;
+  max-width: 50px;
+  max-height: 50px;
+
+  margin: 0;
+
+  --padding-start: 0;
+  --padding-end: 0;
+  --padding-top: 0;
+  --padding-bottom: 0;
+  --border-radius: 999px;
+  --background: transparent;
+  --background-hover: transparent;
+  --background-activated: transparent;
+  --box-shadow: none;
+  --color: #111827;
+
+  border: none;
+  box-shadow: none;
+  background: transparent;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  overflow: visible;
+}
+
+/* Circular close button for the manage detail panel. */
+.manage-detail-close-button ion-icon {
+  width: 35px;
+  height: 35px;
+  font-size: 35px;
+  line-height: 1;
+  color: #111827;
+}
+
+/* Floating panel for edit and delete item details. */
+.manage-detail-panel.open .manage-detail-close-button {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  transition-delay: 20ms;
+}
+
+/* Floating panel for edit and delete item details. */
+.manage-detail-panel.closing .manage-detail-close-button {
+  opacity: 0;
+  transform: translate3d(0, 10px, 0);
+  transition-delay: 0ms;
+}
+
+/* Circular close button for the manage detail panel. */
+.manage-detail-close-button::part(native) {
+  width: 50px;
+  height: 50px;
+  min-width: 50px;
+  min-height: 50px;
+  max-width: 50px;
+  max-height: 50px;
+  padding: 0;
+  box-sizing: border-box;
+  border: none;
+  box-shadow: none;
+  border-radius: 999px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.30);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* Circular close button for the manage detail panel. */
+.manage-detail-close-button:hover::part(native) {
+  background: rgba(255, 255, 255, 0.44);
+}
+
+/* Circular close button for the manage detail panel. */
+.manage-detail-close-button:active::part(native) {
+  background: rgba(255, 255, 255, 0.52);
+}
+
+/* Grid layout for edit fields and delete detail rows. */
+.manage-edit-form,
+.delete-detail-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-bottom: 4px;
+}
+
+/* Form field container for edit mode. */
+.manage-form-field,
+.delete-detail-field {
+  opacity: 0;
+  transform: translate3d(0, 18px, 0);
+  transition:
+    opacity 130ms linear,
+    transform 130ms ease-out;
+}
+
+/* Floating panel for edit and delete item details. */
+.manage-detail-panel.open .manage-form-field,
+.manage-detail-panel.open .delete-detail-field,
+.manage-detail-panel.open .manage-form-actions {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+
+.manage-detail-panel.open .manage-form-field:nth-child(1),
+/* Floating panel for edit and delete item details. */
+.manage-detail-panel.open .delete-detail-field:nth-child(1) {
+  transition-delay: 40ms;
+}
+
+.manage-detail-panel.open .manage-form-field:nth-child(2),
+/* Floating panel for edit and delete item details. */
+.manage-detail-panel.open .delete-detail-field:nth-child(2) {
+  transition-delay: 60ms;
+}
+
+.manage-detail-panel.open .manage-form-field:nth-child(3),
+/* Floating panel for edit and delete item details. */
+.manage-detail-panel.open .delete-detail-field:nth-child(3) {
+  transition-delay: 80ms;
+}
+
+.manage-detail-panel.open .manage-form-field:nth-child(4),
+/* Floating panel for edit and delete item details. */
+.manage-detail-panel.open .delete-detail-field:nth-child(4) {
+  transition-delay: 100ms;
+}
+
+.manage-detail-panel.open .manage-form-field:nth-child(5),
+/* Floating panel for edit and delete item details. */
+.manage-detail-panel.open .delete-detail-field:nth-child(5) {
+  transition-delay: 120ms;
+}
+
+.manage-detail-panel.open .manage-form-field:nth-child(6),
+/* Floating panel for edit and delete item details. */
+.manage-detail-panel.open .delete-detail-field:nth-child(6) {
+  transition-delay: 140ms;
+}
+
+.manage-detail-panel.open .manage-form-field:nth-child(7),
+/* Floating panel for edit and delete item details. */
+.manage-detail-panel.open .delete-detail-field:nth-child(7) {
+  transition-delay: 160ms;
+}
+
+.manage-detail-panel.open .manage-form-field:nth-child(8),
+/* Floating panel for edit and delete item details. */
+.manage-detail-panel.open .delete-detail-field:nth-child(8) {
+  transition-delay: 180ms;
+}
+
+.manage-detail-panel.open .manage-form-field:nth-child(9),
+/* Floating panel for edit and delete item details. */
+.manage-detail-panel.open .delete-detail-field:nth-child(9) {
+  transition-delay: 200ms;
+}
+
+/* Floating panel for edit and delete item details. */
+.manage-detail-panel.open .manage-form-actions {
+  transition-delay: 220ms;
+}
+
+/* Floating panel for edit and delete item details. */
+.manage-detail-panel.closing .manage-detail-topbar,
+.manage-detail-panel.closing .manage-form-field,
+.manage-detail-panel.closing .delete-detail-field,
+.manage-detail-panel.closing .manage-form-actions {
+  opacity: 0;
+  transform: translate3d(0, 10px, 0);
+  transition-delay: 0ms;
+}
+
+/* Form field container for edit mode. */
+.manage-form-field,
+.delete-detail-field {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Form field container for edit mode. */
+.manage-form-field label,
+.delete-detail-field label {
+  display: block;
+  padding-left: 10px;
+  margin: 0 0 8px 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #111827;
+  line-height: 1.2;
+}
+
+/* Form field container for edit mode. */
+.manage-form-field label span {
+  color: #111827;
+}
+
+/* Editable input/select/textarea style for the manage form. */
+.manage-form-control,
+.delete-detail-value-box {
+  min-height: 45px;
+  width: 100%;
+  box-sizing: border-box;
+
+  display: flex;
+  align-items: center;
+  padding: 8px 12px;
+
+  border-radius: var(--glass-inner-radius);
+  border: var(--glass-border-width) solid var(--glass-border);
+  background: var(--glass-white-strong);
+  color: #111827;
+  font-family: inherit;
+  font-size: 17px;
+  font-weight: 400;
+  line-height: 1.35;
+  word-break: break-word;
+  box-shadow: var(--glass-shadow);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+
+  outline: none;
+}
+
+/* Editable input/select/textarea style for the manage form. */
+.manage-form-control::placeholder {
+  color: #6b7280;
+  opacity: 1;
+}
+
+/* Readonly style for the item ID field. */
+.readonly-form-control {
+  background: rgba(156, 163, 175, 0.22);
+  border-color: rgba(107, 114, 128, 0.35);
+  color: #6b7280;
+  cursor: not-allowed;
+}
+
+/* Readonly value box used in the delete detail view. */
+.manage-form-textarea,
+.delete-detail-value-box-note {
+  min-height: 96px;
+  align-items: flex-start;
+  resize: none;
+}
+
+/* Button row for clear, update, and delete actions. */
+.manage-form-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+  margin-top: 30px;
+
+  opacity: 0;
+  transform: translate3d(0, 18px, 0);
+  transition:
+    opacity 130ms linear,
+    transform 130ms ease-out;
+}
+
+/* Shared style for manage form action buttons. */
+.manage-form-button {
+  height: 50px;
+  min-height: 50px;
+  margin: 0;
+
+  --border-radius: var(--glass-inner-radius);
+  --padding-top: 0;
+  --padding-bottom: 0;
+  --box-shadow: none;
+  --color: #111827;
+
+  font-size: 20px;
+  text-transform: none;
+  letter-spacing: 0.8px;
+}
+
+/* Shared style for manage form action buttons. */
+.manage-form-button::part(native) {
+  height: 50px;
+  min-height: 50px;
+  border-radius: var(--glass-inner-radius);
+  border: var(--glass-border-width) solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+/* Clear/cancel button style. */
+.cancel-form-button {
+  --background: rgba(255, 255, 255, 0.58);
+  --background-hover: rgba(255, 255, 255, 0.66);
+  --background-activated: rgba(255, 255, 255, 0.74);
+}
+
+/* Clear/cancel button style. */
+.cancel-form-button::part(native) {
+  background: rgba(255, 255, 255, 0.58);
+}
+
+/* Update button style. */
+.update-submit-button {
+  --background: rgba(215, 227, 255, 0.72);
+  --background-hover: rgba(215, 227, 255, 0.82);
+  --background-activated: rgba(215, 227, 255, 0.92);
+}
+
+/* Update button style. */
+.update-submit-button::part(native) {
+  background: rgba(215, 227, 255, 0.72);
+}
+
+/* Delete button style. */
+.delete-submit-button {
+  --background: rgba(255, 205, 205, 0.76);
+  --background-hover: rgba(255, 190, 190, 0.84);
+  --background-activated: rgba(255, 175, 175, 0.92);
+}
+
+/* Delete button style. */
+.delete-submit-button::part(native) {
+  background: rgba(255, 205, 205, 0.76);
+}
+
+/* Empty state card shown when no search results exist. */
+.empty-card {
+  flex: 1 1 auto;
+  width: 100%;
+  height: auto;
+  margin: 0;
+  border-radius: var(--glass-card-radius);
+  text-align: center;
+  overflow: hidden;
+  --background: var(--glass-white-strong) !important;
+  background: var(--glass-white-strong) !important;
+  border: var(--glass-border-width) solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+/* Empty state card shown when no search results exist. */
+.empty-card ion-card-content {
+  height: 100%;
+  min-height: 120px;
+  padding: 24px 18px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* Empty state card shown when no search results exist. */
+.empty-card ion-icon {
+  font-size: 44px;
+  color: var(--ion-color-medium);
+}
+
+/* Empty state card shown when no search results exist. */
+.empty-card h2 {
+  font-size: 18px;
+  font-weight: 800;
+  margin: 10px 0 4px 0;
+  color: #1f2937;
+}
+
+/* Empty state card shown when no search results exist. */
+.empty-card p {
+  margin: 0;
+  color: #6b7280;
+  font-size: 14px;
+}
+
+/* Glass-style confirm delete alert */
+
+/* Global styling for the delete confirmation alert. */
+::ng-deep .inventory-glass-confirm-alert {
+  --backdrop-opacity: 0.16;
+}
+
+/* Global styling for the delete confirmation alert. */
+::ng-deep .inventory-glass-confirm-alert .alert-wrapper {
+  width: min(92vw, 360px);
+  max-width: 360px;
+  border-radius: 22px;
+  border: var(--glass-border-width) solid var(--glass-border);
+  background: rgba(255, 255, 255, 0.74);
+  box-shadow:
+    0 18px 44px rgba(31, 41, 55, 0.16),
+    inset 0 1px 0 rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  overflow: hidden;
+}
+
+/* Global styling for the delete confirmation alert. */
+::ng-deep .inventory-glass-confirm-alert .alert-head {
+  padding: 26px 22px 8px 22px;
+}
+
+/* Global styling for the delete confirmation alert. */
+::ng-deep .inventory-glass-confirm-alert .alert-title {
+  color: #1b1b1b;
+  font-size: 22px;
+  font-weight: 800;
+  line-height: 1.2;
+  text-align: center;
+  margin: 0;
+}
+
+/* Global styling for the delete confirmation alert. */
+::ng-deep .inventory-glass-confirm-alert .alert-message {
+  padding: 8px 24px 0 24px;
+  color: #374151;
+  font-size: 16px;
+  line-height: 1.45;
+  text-align: center;
+}
+
+/* Global styling for the delete confirmation alert. */
+::ng-deep .inventory-glass-confirm-alert .alert-button-group {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: stretch;
+  gap: 14px;
+
+  padding: 22px 20px 20px 20px;
+}
+
+/* Global styling for the delete confirmation alert. */
+::ng-deep .inventory-glass-confirm-alert .alert-button {
+  margin: 0 !important;
+  width: 100%;
+  min-width: 0;
+  height: 50px;
+  min-height: 50px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 16px;
+  border: var(--glass-border-width) solid rgba(255, 255, 255, 0.62);
+  background: rgba(255, 255, 255, 0.52);
+  box-shadow:
+    0 8px 18px rgba(31, 41, 55, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.45);
+
+  color: #111827;
+  font-size: 20px;
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: 0.8px;
+}
+
+/* Global styling for the delete confirmation alert. */
+::ng-deep .inventory-glass-confirm-alert .alert-button .alert-button-inner {
+  justify-content: center;
+}
+
+/* Global styling for the delete confirmation alert. */
+::ng-deep .inventory-glass-confirm-alert .alert-button-role-cancel {
+  background: rgba(255, 255, 255, 0.52);
+}
+
+/* Global styling for the delete confirmation alert. */
+::ng-deep .inventory-glass-confirm-alert .alert-button-role-destructive {
+  background: rgba(245, 201, 201, 0.78);
+}
+
+/* Responsive adjustments for narrow mobile screens. */
+@media (max-width: 360px) {
+  /* Main layout container for the manage item page. */
+  .page-container {
+    padding: 10px;
+    padding-bottom: calc(88px + var(--ion-safe-area-bottom, 0px));
+    gap: 10px;
+  }
+
+  /* Section container for the edit and delete flip cards. */
+  .manage-flip-section {
+    flex-basis: calc((80% - 10px) / 2);
+    gap: 7px;
+  }
+
+  /* Changes a flip section into a search-result-only area. */
+  .manage-flip-section.result-only-section {
+    grid-template-rows: minmax(0, 1fr);
+  }
+
+  /* Title style for the edit and delete sections. */
+  .manage-section-title {
+    font-size: 19px;
+  }
+
+  /* Instruction list shown under each manage section title. */
+  .manage-section-description {
+    margin-top: 4px;
+    font-size: 12px;
+    line-height: 1.2;
+    transform: translateX(8px);
+  }
+
+  /* Large centered label displayed on the front of each flip card. */
+  .flip-main-label {
+    font-size: 22px;
+  }
+
+  /* Back side of the flip card containing the search controls. */
+  .flip-back-button {
+    left: 10px;
+    top: 10px;
+
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    min-height: 40px;
+    max-width: 40px;
+    max-height: 40px;
+  }
+
+  /* Back side of the flip card containing the search controls. */
+  .flip-back-button::part(native) {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    min-height: 40px;
+    max-width: 40px;
+    max-height: 40px;
+  }
+
+  /* Back side of the flip card containing the search controls. */
+  .flip-back-button ion-icon {
+    width: 21px;
+    height: 21px;
+    font-size: 21px;
+  }
+
+  /* Back side of the flip card containing the search controls. */
+  .flip-back-content {
+    padding: 12px;
+  }
+
+  /* Vertical stack for the search row and clear button. */
+  .manage-search-stack {
+    max-width: 330px;
+    height: 48px;
+  }
+
+  /* Horizontal row containing the search input and search button. */
+  .manage-search-row {
+    max-width: 330px;
+    height: 48px;
+    gap: 8px;
+  }
+
+  /* Glass search input container. */
+  .manage-search-box {
+    height: 48px;
+  }
+
+  /* Native search input field. */
+  .manage-search-input {
+    font-size: 15px;
+    padding: 0 14px;
+  }
+
+  /* Floating placeholder label for the custom search input. */
+  .manage-search-placeholder {
+    font-size: 15px;
+  }
+
+  /* Search icon button used by edit and delete search. */
+  .manage-search-button {
+    width: 48px;
+    height: 48px;
+    min-width: 48px;
+  }
+
+  /* Search icon button used by edit and delete search. */
+  .manage-search-button ion-icon {
+    font-size: 22px;
+  }
+
+  /* Button that clears the current search results. */
+  .clear-search-under-button {
+    width: 110px;
+    height: 34px;
+    min-height: 34px;
+    top: calc(100% + 10px);
+    font-size: 13px;
+
+    --padding-start: 12px;
+    --padding-end: 12px;
+  }
+
+  /* Button that clears the current search results. */
+  .clear-search-under-button::part(native) {
+    height: 34px;
+    min-height: 34px;
+  }
+
+  /* Area that displays search results in the opposite box position. */
+  .cross-result-area {
+    gap: 8px;
+  }
+
+  /* Text heading above the search results. */
+  .cross-result-heading {
+    font-size: 19px;
+  }
+
+  /* Search result item card style. */
+  .item-card ion-card-header.item-header {
+    padding: 10px 12px 0 12px;
+  }
+
+  /* Search result item card style. */
+  .item-card ion-card-content {
+    padding: 10px 12px 12px 12px;
+  }
+
+  /* Scrollable container for search result cards. */
+  .result-scroll .item-card+.item-card {
+    margin-top: 10px;
+  }
+
+  /* Scrollable container for search result cards. */
+  .result-scroll.single-result-scroll .item-card+.item-card {
+    margin-top: 0;
+  }
+
+  /* Item name and category column. */
+  .item-title-group ion-card-title {
+    font-size: 16px;
+  }
+
+  /* Item name and category column. */
+  .item-title-group ion-card-subtitle {
+    font-size: 13px;
+    margin-top: 10px;
+  }
+
+  /* Centered select hint displayed on result cards. */
+  .item-click-hint {
+    top: 28px;
+  }
+
+  /* Centered select hint displayed on result cards. */
+  .item-click-hint span {
+    font-size: 12px;
+  }
+
+  /* Centered select hint displayed on result cards. */
+  .item-click-hint ion-icon {
+    font-size: 14px;
+  }
+
+  /* Stock status text style. */
+  .status-text {
+    font-size: 15px;
+  }
+
+  /* Featured item label style. */
+  .featured-text {
+    font-size: 13px;
+    margin-top: 10px;
+  }
+
+  /* Compact grid for ID, supplier, price, and quantity. */
+  .item-info-grid {
+    gap: 8px;
+  }
+
+  /* Glass box used for each compact item attribute. */
+  .info-box {
+    padding: 8px;
+    min-height: 36px;
+  }
+
+  /* Glass box used for each compact item attribute. */
+  .info-box .info-label,
+  .info-box strong {
+    font-size: 13px;
+  }
+
+  /* Scrollable content inside the manage detail panel. */
+  .manage-detail-content {
+    padding: 16px;
+    padding-top: calc(var(--ion-safe-area-top, 0px) + 16px);
+    padding-bottom: calc(var(--ion-safe-area-bottom, 0px) + 16px);
+  }
+
+  /* Circular close button for the manage detail panel. */
+  .manage-detail-close-button {
+    right: 16px;
+    top: 16px;
+  }
+
+  /* Mode title shown in the manage detail panel. */
+  .manage-detail-eyebrow {
+    font-size: 22px;
+  }
+
+  /* Grid layout for edit fields and delete detail rows. */
+  .manage-edit-form,
+  .delete-detail-form {
+    gap: 16px;
+  }
+
+  /* Form field container for edit mode. */
+  .manage-form-field label,
+  .delete-detail-field label {
+    font-size: 17px;
+  }
+
+  /* Editable input/select/textarea style for the manage form. */
+  .manage-form-control,
+  .delete-detail-value-box {
+    min-height: 54px;
+    font-size: 16px;
+    padding: 11px 14px;
+  }
+
+  /* Readonly value box used in the delete detail view. */
+  .manage-form-textarea,
+  .delete-detail-value-box-note {
+    min-height: 96px;
+  }
+
+  /* Shared style for manage form action buttons. */
+  .manage-form-button,
+  .manage-form-button::part(native) {
+    height: 46px;
+    min-height: 46px;
+    font-size: 16px;
+  }
+
+  /* Empty state card shown when no search results exist. */
+  .empty-card ion-card-content {
+    min-height: 110px;
+    padding: 20px 14px;
+  }
+
+  /* Empty state card shown when no search results exist. */
+  .empty-card ion-icon {
+    font-size: 38px;
+  }
+
+  /* Empty state card shown when no search results exist. */
+  .empty-card h2 {
+    font-size: 16px;
+  }
+
+  /* Empty state card shown when no search results exist. */
+  .empty-card p {
+    font-size: 13px;
+  }
+
+  /* Global styling for the delete confirmation alert. */
+  ::ng-deep .inventory-glass-confirm-alert .alert-wrapper {
+    width: min(92vw, 332px);
+  }
+
+  /* Global styling for the delete confirmation alert. */
+  ::ng-deep .inventory-glass-confirm-alert .alert-title {
+    font-size: 20px;
+  }
+
+  /* Global styling for the delete confirmation alert. */
+  ::ng-deep .inventory-glass-confirm-alert .alert-message {
+    font-size: 14px;
+    padding: 8px 18px 0 18px;
+  }
+
+  /* Global styling for the delete confirmation alert. */
+  ::ng-deep .inventory-glass-confirm-alert .alert-button-group {
+    gap: 10px;
+    padding: 4px;
+  }
+
+  /* Global styling for the delete confirmation alert. */
+  ::ng-deep .inventory-glass-confirm-alert .alert-button {
+    height: 46px;
+    min-height: 46px;
+    font-size: 16px;
+    border-radius: 14px;
+  }
+
+  
+}
+
+/* Custom opaque liquid-glass select menus for Edit Item form */
+
+/* Wrapper for custom enum dropdown fields. */
+.glass-select-field {
+  position: relative;
+  z-index: 5;
+}
+
+/* Wrapper for custom enum dropdown fields. */
+.glass-select-field-open {
+  z-index: 30;
+}
+
+/* Input-like container for custom dropdown controls. */
+.glass-select-value-box {
+  position: relative;
+  overflow: visible;
+  padding: 0;
+}
+
+/* Button used to open a custom dropdown menu. */
+.glass-select-control {
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+
+  padding: 0 12px;
+  margin: 0;
+
+  border: none;
+  outline: none;
+  background: transparent;
+
+  color: #111827;
+  font-family: inherit;
+  font-size: 17px;
+  font-weight: 400;
+  line-height: 1.35;
+  text-align: left;
+
+  cursor: pointer;
+}
+
+/* Button used to open a custom dropdown menu. */
+.glass-select-control span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Button used to open a custom dropdown menu. */
+.glass-select-control ion-icon {
+  flex-shrink: 0;
+  font-size: 20px;
+  color: #111827;
+}
+
+/* Placeholder text colour for empty dropdown values. */
+.placeholder-text {
+  color: #767676;
+}
+
+/* Floating menu containing enum options. */
+.glass-select-menu {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(100% + 8px);
+  z-index: 40;
+
+  padding: 6px;
+
+  border-radius: var(--glass-inner-radius);
+  border: var(--glass-border-width) solid rgba(255, 255, 255, 0.95);
+
+  background: #e8e8e8;
+
+  box-shadow:
+    0 12px 22px rgba(31, 41, 55, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.65);
+
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+
+  overflow: hidden;
+}
+
+/* Selectable option inside a custom dropdown menu. */
+.glass-select-option {
+  width: 100%;
+  min-height: 38px;
+
+  display: flex;
+  align-items: center;
+
+  padding: 0 12px;
+  margin: 0;
+
+  border: none;
+  outline: none;
+  border-radius: calc(var(--glass-inner-radius) - 3px);
+
+  background: #e8e8e8;
+
+  color: #111827;
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 500;
+  text-align: left;
+
+  cursor: pointer;
+}
+
+/* Selectable option inside a custom dropdown menu. */
+.glass-select-option:hover {
+  background: #f3f4f6;
+}
+
+/* Selectable option inside a custom dropdown menu. */
+.glass-select-option:active {
+  background: #e5e7eb;
+}
+
+/* Placeholder option used to clear or prompt dropdown selection. */
+.empty-select-option {
+  color: #6b7280;
+}
+
+/* Responsive adjustments for narrow mobile screens. */
+@media (max-width: 360px) {
+  /* Button used to open a custom dropdown menu. */
+  .glass-select-control {
+    font-size: 16px;
+  }
+
+  /* Selectable option inside a custom dropdown menu. */
+  .glass-select-option {
+    min-height: 38px;
+    font-size: 15px;
+  }
+}
+
+/* Low-height device optimization */
+
+/* Compact layout adjustments for low-height mobile screens. */
+@media (max-height: 700px) {
+  /* Scrollable content inside the manage detail panel. */
+  .manage-detail-content {
+    padding: 12px;
+    padding-top: calc(var(--ion-safe-area-top, 0px) + 12px);
+    padding-bottom: calc(var(--ion-safe-area-bottom, 0px) + 18px);
+  }
+
+  /* Top heading area inside the manage detail panel. */
+  .manage-detail-topbar {
+    min-height: 42px;
+    margin-bottom: 12px;
+  }
+
+  /* Mode title shown in the manage detail panel. */
+  .manage-detail-eyebrow {
+    font-size: 20px;
+  }
+
+  /* Grid layout for edit fields and delete detail rows. */
+  .manage-edit-form,
+  .delete-detail-form {
+    gap: 8px;
+  }
+
+  /* Form field container for edit mode. */
+  .manage-form-field label,
+  .delete-detail-field label {
+    font-size: 16px;
+    margin-bottom: 6px;
+  }
+
+  /* Editable input/select/textarea style for the manage form. */
+  .manage-form-control,
+  .delete-detail-value-box {
+    min-height: 40px;
+    font-size: 15px;
+    padding: 8px 10px;
+  }
+
+  /* Readonly value box used in the delete detail view. */
+  .manage-form-textarea,
+  .delete-detail-value-box-note {
+    min-height: 78px;
+  }
+
+  /* Button row for clear, update, and delete actions. */
+  .manage-form-actions {
+    margin-top: 12px;
+    gap: 10px;
+  }
+
+  /* Shared style for manage form action buttons. */
+  .manage-form-button,
+  .manage-form-button::part(native) {
+    height: 44px;
+    min-height: 44px;
+    font-size: 15px;
+  }
+
+  /* Circular close button for the manage detail panel. */
+  .manage-detail-close-button {
+    right: 12px;
+    top: 12px;
+  }
+}
+
+/* Low-height optimization for Tab3 flip box back side */
+
+/* Compact layout adjustments for low-height mobile screens. */
+@media (max-height: 700px) {
+  /* Back side of the flip card containing the search controls. */
+  .flip-back-button {
+    left: 8px;
+    top: 8px;
+
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+    min-height: 36px;
+    max-width: 36px;
+    max-height: 36px;
+  }
+
+  /* Back side of the flip card containing the search controls. */
+  .flip-back-button::part(native) {
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+    min-height: 36px;
+    max-width: 36px;
+    max-height: 36px;
+  }
+
+  /* Back side of the flip card containing the search controls. */
+  .flip-back-button ion-icon {
+    width: 20px;
+    height: 20px;
+    font-size: 20px;
+  }
+
+  /* Back side of the flip card containing the search controls. */
+  .flip-back-content {
+    padding: 10px 12px 10px 62px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Vertical stack for the search row and clear button. */
+  .manage-search-stack {
+    width: 100%;
+    max-width: none;
+    height: auto;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+  }
+
+  /* Horizontal row containing the search input and search button. */
+  .manage-search-row {
+    width: 100%;
+    max-width: none;
+    height: 42px;
+    gap: 8px;
+  }
+
+  /* Glass search input container. */
+  .manage-search-box {
+    height: 42px;
+  }
+
+  /* Native search input field. */
+  .manage-search-input {
+    font-size: 14px;
+    padding: 0 12px;
+  }
+
+  /* Floating placeholder label for the custom search input. */
+  .manage-search-placeholder {
+    font-size: 14px;
+  }
+
+  /* Search icon button used by edit and delete search. */
+  .manage-search-button {
+    width: 42px;
+    height: 42px;
+    min-width: 42px;
+  }
+
+  /* Search icon button used by edit and delete search. */
+  .manage-search-button ion-icon {
+    font-size: 20px;
+  }
+
+  /* Button that clears the current search results. */
+  .clear-search-under-button {
+    position: static;
+    left: auto;
+    top: auto;
+    transform: none;
+
+    width: 96px;
+    height: 28px;
+    min-height: 28px;
+    margin: 0;
+
+    font-size: 13px;
+    font-weight: 700;
+
+    --padding-start: 10px;
+    --padding-end: 10px;
+    --padding-top: 0;
+    --padding-bottom: 0;
+  }
+
+  /* Button that clears the current search results. */
+  .clear-search-under-button::part(native) {
+    height: 28px;
+    min-height: 28px;
+  }
+}
+
+/* Fix Tab3 low-height flip-back search layout */
+
+/* Compact layout adjustments for low-height mobile screens. */
+@media (max-height: 700px) {
+  /* Back side of the flip card containing the search controls. */
+  .flip-back-button {
+    left: 8px;
+    top: 8px;
+
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+    min-height: 36px;
+    max-width: 36px;
+    max-height: 36px;
+  }
+
+  /* Back side of the flip card containing the search controls. */
+  .flip-back-button::part(native) {
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+    min-height: 36px;
+    max-width: 36px;
+    max-height: 36px;
+  }
+
+  /* Back side of the flip card containing the search controls. */
+  .flip-back-button ion-icon {
+    width: 20px;
+    height: 20px;
+    font-size: 20px;
+  }
+
+  /* Back side of the flip card containing the search controls. */
+  .flip-back-content {
+    position: relative;
+    padding: 10px 12px 34px 58px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Vertical stack for the search row and clear button. */
+  .manage-search-stack {
+    position: static;
+
+    width: 100%;
+    max-width: none;
+    height: 42px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Horizontal row containing the search input and search button. */
+  .manage-search-row {
+    width: 100%;
+    max-width: none;
+    height: 42px;
+    gap: 8px;
+  }
+
+  /* Glass search input container. */
+  .manage-search-box {
+    height: 42px;
+  }
+
+  /* Native search input field. */
+  .manage-search-input {
+    font-size: 14px;
+    padding: 0 12px;
+  }
+
+  /* Floating placeholder label for the custom search input. */
+  .manage-search-placeholder {
+    font-size: 14px;
+  }
+
+  /* Search icon button used by edit and delete search. */
+  .manage-search-button {
+    width: 42px;
+    height: 42px;
+    min-width: 42px;
+    min-height: 42px;
+    max-width: 42px;
+    max-height: 42px;
+    margin: 0;
+  }
+
+  /* Search icon button used by edit and delete search. */
+  .manage-search-button::part(native) {
+    width: 42px;
+    height: 42px;
+    min-width: 42px;
+    min-height: 42px;
+    max-width: 42px;
+    max-height: 42px;
+    padding: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Search icon button used by edit and delete search. */
+  .manage-search-button ion-icon {
+    width: 20px;
+    height: 20px;
+    font-size: 20px;
+  }
+
+  /* Button that clears the current search results. */
+  .clear-search-under-button {
+    position: absolute;
+    left: 50%;
+    right: auto;
+    top: auto;
+    bottom: 7px;
+    transform: translateX(-50%);
+    z-index: 5;
+
+    width: 96px;
+    height: 26px;
+    min-height: 26px;
+    max-height: 26px;
+    margin: 0;
+
+    --padding-start: 8px;
+    --padding-end: 8px;
+    --padding-top: 0;
+    --padding-bottom: 0;
+    --border-radius: var(--glass-inner-radius);
+    --background: rgba(255, 255, 255, 0.58);
+    --background-hover: rgba(255, 255, 255, 0.66);
+    --background-activated: rgba(255, 255, 255, 0.74);
+    --box-shadow: none;
+    --color: #111827;
+
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: none;
+  }
+
+  /* Button that clears the current search results. */
+  .clear-search-under-button::part(native) {
+    width: 96px;
+    height: 26px;
+    min-height: 26px;
+    max-height: 26px;
+    padding: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: var(--glass-inner-radius);
+    border: var(--glass-border-width) solid var(--glass-border);
+    background: rgba(255, 255, 255, 0.58);
+    box-shadow: var(--glass-shadow);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+  }
+}
+
+/* Correct Tab3 scrollbar display */
+
+/* Scrollable container for search result cards. */
+.result-scroll,
+.manage-detail-content {
+  scrollbar-width: thin;
+  -ms-overflow-style: auto;
+}
+
+.result-scroll::-webkit-scrollbar,
+/* Scrollable content inside the manage detail panel. */
+.manage-detail-content::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.result-scroll::-webkit-scrollbar-track,
+/* Scrollable content inside the manage detail panel. */
+.manage-detail-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.result-scroll::-webkit-scrollbar-thumb,
+/* Scrollable content inside the manage detail panel. */
+.manage-detail-content::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: rgba(31, 41, 55, 0.22);
+}
+
+/* Compact layout adjustments for low-height mobile screens. */
+@media (max-height: 700px) {
+  /* Global styling for the delete confirmation alert. */
+  ::ng-deep .inventory-glass-confirm-alert .alert-button {
+    height: 44px;
+    min-height: 44px;
+    font-size: 15px;
+  }
+
+  /* Global styling for the delete confirmation alert. */
+  ::ng-deep .inventory-glass-confirm-alert .alert-button .alert-button-inner {
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+  }
+}

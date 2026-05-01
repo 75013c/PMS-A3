@@ -1,0 +1,276 @@
+/* Makes the tabs host transparent so the page background can show through. */
+:host {
+  background: transparent;
+}
+
+/* Keeps the Ionic tabs container transparent. */
+ion-tabs {
+  background: transparent !important;
+}
+
+/* Main bottom tab bar layout and glass container positioning. */
+ion-tab-bar {
+  --tab-pad-x: 8px;
+  --tab-pad-y: 8px;
+  --tab-pad-x-half: 4px;
+
+  position: absolute;
+  left: 14px;
+  right: 14px;
+  bottom: calc(10px + var(--ion-safe-area-bottom, 0px));
+
+  height: 60px;
+  padding: var(--tab-pad-y) var(--tab-pad-x);
+  margin: 0;
+
+  --background: transparent !important;
+  --border: 0;
+
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+
+  overflow: visible;
+  contain: none;
+  isolation: isolate;
+}
+
+/* Glass background layer behind the whole tab bar. */
+ion-tab-bar::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+
+  border: var(--glass-border-width, 1px) solid var(--glass-border, rgba(255, 255, 255, 0.70));
+  border-radius: 24px;
+
+  background: var(--glass-white-soft, rgba(255, 255, 255, 0.15));
+  box-shadow: var(
+    --glass-shadow,
+    0 8px 12px rgba(31, 41, 55, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.35)
+  );
+
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+/* Moving glass highlight that indicates the selected tab. */
+ion-tab-bar::before {
+  content: "";
+  position: absolute;
+  left: var(--tab-pad-x);
+  top: var(--tab-pad-y);
+  z-index: 1;
+  pointer-events: none;
+
+  width: calc(25% - var(--tab-pad-x-half));
+  height: calc(100% - 16px);
+
+  border-radius: 18px;
+  border: var(--glass-border-width, 1px) solid var(--glass-border, rgba(255, 255, 255, 0.70));
+  background: var(--glass-white-strong, rgba(255, 255, 255, 0.40));
+
+  box-shadow:
+    0 10px 22px rgba(31, 41, 55, 0.14),
+    inset 0 1px 0 rgba(255, 255, 255, 0.38);
+
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+
+  transition:
+    left 360ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    background 220ms ease,
+    box-shadow 220ms ease;
+}
+
+/* Highlight position when Tab 1 is selected. */
+ion-tab-bar.tab1-selected::before {
+  left: var(--tab-pad-x);
+}
+
+/* Highlight position when Tab 2 is selected. */
+ion-tab-bar.tab2-selected::before {
+  left: calc(25% + var(--tab-pad-x-half));
+}
+
+/* Highlight position when Tab 3 is selected. */
+ion-tab-bar.tab3-selected::before {
+  left: 50%;
+}
+
+/* Highlight position when Tab 4 is selected. */
+ion-tab-bar.tab4-selected::before {
+  left: calc(75% - var(--tab-pad-x-half));
+}
+
+/* Shared style for each tab button. */
+ion-tab-button {
+  position: relative;
+  z-index: 2;
+
+  flex: 1 1 0;
+  min-width: 0;
+  height: 100%;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  --background: transparent;
+  --background-focused: transparent;
+  --background-focused-opacity: 0;
+  --background-hover: transparent;
+  --background-activated: transparent;
+  --color: #525252;
+  --color-selected: #000000;
+  --padding-start: 0;
+  --padding-end: 0;
+  --ripple-color: transparent;
+
+  color: #525252;
+  border-radius: 18px;
+
+  overflow: visible;
+  contain: none;
+
+  transition:
+    color 220ms ease,
+    transform 260ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+/* Native Ionic tab button layout. */
+ion-tab-button::part(native) {
+  height: 100%;
+  overflow: visible;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Selected tab button text and lift effect. */
+ion-tab-button.tab-selected {
+  color: #000000;
+  transform: translateY(-3px);
+}
+
+/* Icon style inside each tab button. */
+ion-tab-button ion-icon {
+  font-size: 23px;
+  margin-bottom: 5px;
+  color: currentColor;
+
+  transition:
+    color 220ms ease,
+    transform 260ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    font-size 220ms ease;
+}
+
+/* Label style inside each tab button. */
+ion-tab-button ion-label {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: 0;
+  color: currentColor;
+
+  white-space: nowrap;
+  overflow: visible;
+
+  transform: translateY(2px);
+
+  transition:
+    color 220ms ease,
+    transform 260ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    font-size 220ms ease;
+}
+
+/* Enlarges the icon when the tab is selected. */
+ion-tab-button.tab-selected ion-icon {
+  font-size: 26px;
+  transform: translateY(-1px);
+}
+
+/* Adjusts the label when the tab is selected. */
+ion-tab-button.tab-selected ion-label {
+  transform: translateY(-1px);
+  font-size: 15px;
+}
+
+/* Responsive tab bar adjustments for narrow mobile screens. */
+@media (max-width: 360px) {
+  /* Smaller tab bar spacing and size on narrow screens. */
+  ion-tab-bar {
+    --tab-pad-x: 7px;
+    --tab-pad-y: 7px;
+    --tab-pad-x-half: 3.5px;
+
+    left: 10px;
+    right: 10px;
+    bottom: calc(8px + var(--ion-safe-area-bottom, 0px));
+
+    height: 66px;
+    padding: var(--tab-pad-y) var(--tab-pad-x);
+  }
+
+  /* Smaller glass background radius on narrow screens. */
+  ion-tab-bar::after {
+    border-radius: 22px;
+  }
+
+  /* Smaller selected-tab highlight on narrow screens. */
+  ion-tab-bar::before {
+    left: var(--tab-pad-x);
+    top: var(--tab-pad-y);
+    width: calc(25% - var(--tab-pad-x-half));
+    height: calc(100% - 14px);
+    border-radius: 16px;
+  }
+
+  /* Narrow-screen highlight position for Tab 1. */
+  ion-tab-bar.tab1-selected::before {
+    left: var(--tab-pad-x);
+  }
+
+  /* Narrow-screen highlight position for Tab 2. */
+  ion-tab-bar.tab2-selected::before {
+    left: calc(25% + var(--tab-pad-x-half));
+  }
+
+  /* Narrow-screen highlight position for Tab 3. */
+  ion-tab-bar.tab3-selected::before {
+    left: 50%;
+  }
+
+  /* Narrow-screen highlight position for Tab 4. */
+  ion-tab-bar.tab4-selected::before {
+    left: calc(75% - var(--tab-pad-x-half));
+  }
+
+  /* Smaller tab icon size on narrow screens. */
+  ion-tab-button ion-icon {
+    font-size: 21px;
+  }
+
+  /* Selected tab icon size on narrow screens. */
+  ion-tab-button.tab-selected ion-icon {
+    font-size: 23px;
+    transform: translateY(-1px);
+  }
+
+  /* Smaller tab label size on narrow screens. */
+  ion-tab-button ion-label {
+    font-size: 11px;
+    transform: translateY(2px);
+  }
+
+  /* Selected tab label position on narrow screens. */
+  ion-tab-button.tab-selected ion-label {
+    transform: translateY(3px);
+  }
+}
